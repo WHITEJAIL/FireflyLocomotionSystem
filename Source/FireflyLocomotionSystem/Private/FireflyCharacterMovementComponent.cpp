@@ -650,24 +650,8 @@ FRotator UFireflyCharacterMovementComponent::GetPhysicsDesiredRotation(float Del
 #pragma optimize( "", on)
 
 float UFireflyCharacterMovementComponent::GetMaxSpeed() const
-{	
-	switch(MovementMode)
-	{
-	case MOVE_Walking:
-	case MOVE_NavWalking:
-		return IsCrouching() ? MaxWalkSpeedCrouched : MaxWalkSpeed;
-	case MOVE_Falling:
-		return MaxWalkSpeed;
-	case MOVE_Swimming:
-		return MaxSwimSpeed;
-	case MOVE_Flying:
-		return MaxFlySpeed;
-	case MOVE_Custom:
-		return MaxCustomMovementSpeed;
-	case MOVE_None:
-	default:
-		return 0.f;
-	}	
+{
+	return Super::GetMaxSpeed();
 }
 
 void UFireflyCharacterMovementComponent::UpdateMaxSpeedFirefly_Implementation()
@@ -696,9 +680,11 @@ bool UFireflyCharacterMovementComponent::GetIsWalking() const
 void UFireflyCharacterMovementComponent::RequestShiftWalk(bool bWantToWalk)
 {
 	RequestToWalk = bWantToWalk;
+	UpdateMaxSpeedFirefly();
 }
 
 void UFireflyCharacterMovementComponent::RequestShiftSprint(bool bWantToSprint)
 {
 	RequestToSprint = bWantToSprint;
+	UpdateMaxSpeedFirefly();
 }

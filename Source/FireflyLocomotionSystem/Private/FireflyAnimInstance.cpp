@@ -4,7 +4,9 @@
 #include "FireflyAnimInstance.h"
 
 #include "FireflyLocomotionFunctionLibrary.h"
+#include "KismetAnimationLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UFireflyAnimInstance::NativeInitializeAnimation()
 {
@@ -31,8 +33,26 @@ void UFireflyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 
+	UpdateLocationData(DeltaSeconds);
+	UpdateRotationData();
 	UpdateVelocityData();
+	UpdateAccelerationData();
 	UpdateCharacterState();
+
+	bIsFirstUpdate = false;
+}
+
+void UFireflyAnimInstance::UpdateLocationData(float DeltaSeconds)
+{
+	DisplacementSinceLastUpdate = (GetOwningActor()->GetActorLocation() - WorldLocation).Size();
+	WorldLocation = GetOwningActor()->GetActorLocation();
+	DisplacementSpeed = (DeltaSeconds != 0.0f) ? (DisplacementSinceLastUpdate / DeltaSeconds) : 0.0f;
+
+	if (bIsFirstUpdate)
+	{
+		DisplacementSinceLastUpdate = 0.f;
+		DisplacementSpeed = 0.f;
+	}
 }
 
 void UFireflyAnimInstance::UpdateRotationData()
@@ -42,13 +62,20 @@ void UFireflyAnimInstance::UpdateRotationData()
 
 void UFireflyAnimInstance::UpdateVelocityData()
 {
+	bool bWasMovingLastUpdate = !LocalVelocity.IsZero();
+
 	WorldVelocity = TryGetPawnOwner()->GetVelocity();
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
+	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);	
+}
 
+void UFireflyAnimInstance::UpdateAccelerationData()
+{
 	WorldAcceleration = OwnerCharacterMovement->GetCurrentAcceleration();
 	LocalAcceleration = WorldRotation.UnrotateVector(WorldAcceleration);
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
+	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(PivotDirection, UKismetMathLibrary::Normal(WorldAcceleration), 0.5f));
 }
 
 void UFireflyAnimInstance::UpdateCharacterState()
