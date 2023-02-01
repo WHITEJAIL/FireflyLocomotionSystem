@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -34,7 +34,7 @@ public:
 #pragma region CharacterMovement
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßĞ¯´øµÄ½ÇÉ«ÔË¶¯×é¼şÊµÀı */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…æºå¸¦çš„è§’è‰²è¿åŠ¨ç»„ä»¶å®ä¾‹ */
 	UPROPERTY(BlueprintReadOnly, Category = "FireflyLocomotionSystem")
 	UCharacterMovementComponent* OwnerCharacterMovement;
 
@@ -47,15 +47,15 @@ protected:
 	virtual void UpdateLocationData(float DeltaSeconds);
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ºÍÉÏ´Î¸üĞÂµÄÎ»ÒÆ¾àÀë²î */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰å’Œä¸Šæ¬¡æ›´æ–°çš„ä½ç§»è·ç¦»å·® */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomotionSystem|LocationData")
 	float DisplacementSinceLastUpdate = 0.f;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÔÚÊÀ½ç×ø±êÏµÖĞµÄÎ»ÖÃ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰åœ¨ä¸–ç•Œåæ ‡ç³»ä¸­çš„ä½ç½® */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomotionSystem|LocationData")
 	FVector WorldLocation = FVector::ZeroVector;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°µÄÎ»ÒÆËÙ¶ÈÖµ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰çš„ä½ç§»é€Ÿåº¦å€¼ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomotionSystem|LocationData")
 	float DisplacementSpeed = 0.f;	
 
@@ -68,7 +68,7 @@ protected:
 	virtual void UpdateRotationData();
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÊÀ½ç×ø±êÏµµÄËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰ä¸–ç•Œåæ ‡ç³»çš„é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
 	FRotator WorldRotation = FRotator::ZeroRotator;
 
@@ -81,19 +81,19 @@ protected:
 	virtual void UpdateVelocityData();
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÊÇ·ñÓµÓĞËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰æ˜¯å¦æ‹¥æœ‰é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
 	uint8 bHasVelocity : 1;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÊÀ½ç×ø±êÏµµÄËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰ä¸–ç•Œåæ ‡ç³»çš„é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
 	FVector WorldVelocity = FVector::ZeroVector;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°±¾µØ×ø±êÏµµÄËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰æœ¬åœ°åæ ‡ç³»çš„é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
 	FVector LocalVelocity = FVector::ZeroVector;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ËÙ¶ÈÊ¸Á¿Ïà¶ÔÓÚ×ÔÉí×ø±êÏµµÄ½Ç¶È */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰é€Ÿåº¦çŸ¢é‡ç›¸å¯¹äºè‡ªèº«åæ ‡ç³»çš„è§’åº¦ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
 	float LocalVelocityDirectionAngle = 0.f;
 
@@ -106,19 +106,19 @@ protected:
 	virtual void UpdateAccelerationData();
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÊÇ·ñÓµÓĞ¼ÓËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰æ˜¯å¦æ‹¥æœ‰åŠ é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
 	uint8 bHasAcceleration : 1;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°ÊÀ½ç×ø±êÏµµÄËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰ä¸–ç•Œåæ ‡ç³»çš„é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
 	FVector WorldAcceleration = FVector::ZeroVector;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°±¾µØ×ø±êÏµµÄËÙ¶ÈÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰æœ¬åœ°åæ ‡ç³»çš„é€Ÿåº¦çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
 	FVector LocalAcceleration = FVector::ZeroVector;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßµ±Ç°µÄ»Ø×ª·½ÏòÊ¸Á¿ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…å½“å‰çš„å›è½¬æ–¹å‘çŸ¢é‡ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
 	FVector PivotDirection = FVector::ZeroVector;
 
@@ -131,20 +131,20 @@ protected:
 	virtual void UpdateCharacterState();
 
 protected:
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßÊÇ·ñÔÚ¶×·üÖĞ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…æ˜¯å¦åœ¨è¹²ä¼ä¸­ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsCrouching : 1;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßÊÇ·ñ´¦ÓÚÌøÔ¾ÉÏÉı×´Ì¬ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…æ˜¯å¦å¤„äºè·³è·ƒä¸Šå‡çŠ¶æ€ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsJumpingToApex : 1;
 
-	/** ¶¯»­ÊµÀıµÄÓµÓĞÕßÊÇ·ñ´¦ÓÚ¿ÕÖĞÏÂÂä×´Ì¬ */
+	/** åŠ¨ç”»å®ä¾‹çš„æ‹¥æœ‰è€…æ˜¯å¦å¤„äºç©ºä¸­ä¸‹è½çŠ¶æ€ */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsFallingToGround : 1;
 
 private:
-	/** µ±Ç°¸üĞÂÊÇ·ñÊÇµÚÒ»´Î¸üĞÂÊÇ·ñ */
+	/** å½“å‰æ›´æ–°æ˜¯å¦æ˜¯ç¬¬ä¸€æ¬¡æ›´æ–°æ˜¯å¦ */
 	bool bIsFirstUpdate = true;
 
 #pragma endregion
