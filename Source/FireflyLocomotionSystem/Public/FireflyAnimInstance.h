@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "FireflyLocomotionTypes.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "FireflyAnimInstance.generated.h"
 
 class UCharacterMovementComponent;
@@ -44,7 +46,9 @@ protected:
 #pragma region LocationData
 
 protected:
-	virtual void UpdateLocationData(float DeltaSeconds);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateLocationData();
+	virtual void UpdateLocationData_Implementation();
 
 protected:
 	/** 动画实例的拥有者当前和上次更新的位移距离差 */
@@ -65,12 +69,26 @@ protected:
 #pragma region RotationData
 
 protected:
-	virtual void UpdateRotationData();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateRotationData();
+	virtual void UpdateRotationData_Implementation();
 
 protected:
 	/** 动画实例的拥有者当前世界坐标系的速度矢量 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
 	FRotator WorldRotation = FRotator::ZeroRotator;
+
+	/** 动画实例的拥有者当前航向角和上一次更新的插值 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
+	float YawDeltaSinceLastUpdate = 0.f;
+
+	/** 动画实例的拥有者当前航向角插值更新的速度 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
+	float YawDeltaSpeed = 0.f;
+
+	/** 动画实例的拥有者当前身体倾斜的角度 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
+	float AdditiveLeanAngle = 0.f;
 
 #pragma endregion
 
@@ -78,24 +96,30 @@ protected:
 #pragma region VelocityData
 
 protected:
-	virtual void UpdateVelocityData();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateVelocityData();
+	virtual void UpdateVelocityData_Implementation();
 
 protected:
 	/** 动画实例的拥有者当前是否拥有速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	uint8 bHasVelocity : 1;
 
 	/** 动画实例的拥有者当前世界坐标系的速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	FVector WorldVelocity = FVector::ZeroVector;
 
 	/** 动画实例的拥有者当前本地坐标系的速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	FVector LocalVelocity = FVector::ZeroVector;
 
 	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	float LocalVelocityDirectionAngle = 0.f;
+
+	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（考虑角色航向角的偏移） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	float LocalVelocityDirectionAngleWithOffset = 0.f;	
 
 #pragma endregion
 
@@ -103,24 +127,53 @@ protected:
 #pragma region AccelerationData
 
 protected:
-	virtual void UpdateAccelerationData();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateAccelerationData();
+	virtual void UpdateAccelerationData_Implementation();
 
 protected:
 	/** 动画实例的拥有者当前是否拥有加速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	uint8 bHasAcceleration : 1;
 
 	/** 动画实例的拥有者当前世界坐标系的速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector WorldAcceleration = FVector::ZeroVector;
 
 	/** 动画实例的拥有者当前本地坐标系的速度矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector LocalAcceleration = FVector::ZeroVector;
 
-	/** 动画实例的拥有者当前的回转方向矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationState")
+	/** 动画实例的拥有者当前的期望运动方向矢量 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector PivotDirection = FVector::ZeroVector;
+
+#pragma endregion
+
+
+#pragma region DirectionData
+
+protected:
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateDirectionData();
+	virtual void UpdateDirectionData_Implementation();
+
+	static EFireflyLocomotionDirectionType SelectLocomotionDirectionFromAngle(float Angle);
+
+	static EFireflyLocomotionDirectionType GetOppositeCardinalDirection(EFireflyLocomotionDirectionType InDirection);
+
+protected:
+	/** 动画实例的拥有者当前的速度方向 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType LocalVelocityDirection;
+
+	/** 动画实例的拥有者当前的速度方向（不考虑角色航向角的偏移） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType LocalVelocityDirectionNoOffset;
+
+	/** 动画实例的拥有者当前的加速度方向的回转方向（用于回转运动） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType PivotDirectionFromAcceleration;
 
 #pragma endregion
 
@@ -128,7 +181,9 @@ protected:
 #pragma region CharacterState
 
 protected:
-	virtual void UpdateCharacterState();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateCharacterState();
+	virtual void UpdateCharacterState_Implementation();
 
 protected:
 	/** 动画实例的拥有者是否在蹲伏中 */
@@ -143,9 +198,49 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsFallingToGround : 1;
 
+	/** 动画实例的拥有者是否更改了下蹲状态（站起或蹲下） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
+	uint8 bCrouchStateChange : 1;
+
+	/** 动画实例的拥有者是否正紧挨着并朝着阻挡物移动 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
+	uint8 bIsRunningIntoWall : 1;
+
+#pragma endregion
+
+
+#pragma region RootYawOffset
+
+protected:
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void UpdateRootYawOffset();
+	virtual void UpdateRootYawOffset_Implementation();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	void SetRootYawOffset(float InRootYawOffset);
+	virtual void SetRootYawOffset_Implementation(float InRootYawOffset);
+
+protected:
+	/** 动画实例的拥有者当前航向角的偏移量 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
+	float RootYawOffset = 0.f;
+
+	/** 动画实例的拥有者当前计算航向角偏移量的浮点值弹跳状态 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
+	FFloatSpringState RootYawOffsetSpringState;
+
+	/** 动画实例的拥有者当前航向角偏移相关的曲线最终值 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
+	float RootYawCurveValue = 0.f;
+
+	/** 动画实例的拥有者当前航向角偏移的计算方式 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
+	EFireflyRootYawOffsetModeType RootYawOffsetMode;
+
+#pragma endregion
+
+
 private:
 	/** 当前更新是否是第一次更新是否 */
 	bool bIsFirstUpdate = true;
-
-#pragma endregion
 };
