@@ -125,7 +125,15 @@ protected:
 
 	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（考虑角色航向角的偏移） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
-	float LocalVelocityDirectionAngleWithOffset = 0.f;	
+	float LocalVelocityDirectionAngleWithOffset = 0.f;
+
+	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（上一次更新） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	float LocalVelocityDirectionAngleLastUpdate = 0.f;
+
+	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（考虑角色航向角的偏移）（上一次更新） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	float LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;	
 
 #pragma endregion
 
@@ -176,6 +184,14 @@ protected:
 	/** 动画实例的拥有者当前的速度方向（不考虑角色航向角的偏移） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
 	EFireflyLocomotionDirectionType LocalVelocityDirectionNoOffset;
+
+	/** 动画实例的拥有者当前的速度方向（上一次更新） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType LocalVelocityDirectionLastUpdate;
+
+	/** 动画实例的拥有者当前的速度方向（不考虑角色航向角的偏移）（上一次更新） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType LocalVelocityDirectionNoOffsetLastUpdate;
 
 	/** 动画实例的拥有者当前的加速度方向的回转方向（用于回转运动） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")

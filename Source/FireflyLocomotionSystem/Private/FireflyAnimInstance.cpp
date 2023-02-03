@@ -74,7 +74,18 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	WorldVelocity = TryGetPawnOwner()->GetVelocity();
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
-	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);	
+
+	LocalVelocityDirectionAngleLastUpdate = LocalVelocityDirectionAngle;
+	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
+
+	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);
+	LocalVelocityDirectionAngleWithOffset = LocalVelocityDirectionAngle - RootYawOffset;
+
+	if (bIsFirstUpdate)
+	{
+		LocalVelocityDirectionAngleLastUpdate = 0.f;
+		LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;
+	}
 }
 
 void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
@@ -82,15 +93,26 @@ void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
 	WorldAcceleration = OwnerCharacterMovement->GetCurrentAcceleration();
 	LocalAcceleration = WorldRotation.UnrotateVector(WorldAcceleration);
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
-	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(PivotDirection, UKismetMathLibrary::Normal(WorldAcceleration), 0.5f));
+	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(
+		PivotDirection, UKismetMathLibrary::Normal(WorldAcceleration), 0.5f));
 }
 
 void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 {
+	LocalVelocityDirectionLastUpdate = LocalVelocityDirection;
+	LocalVelocityDirectionNoOffsetLastUpdate = LocalVelocityDirectionNoOffset;
+
 	LocalVelocityDirection = SelectLocomotionDirectionFromAngle(LocalVelocityDirectionAngleWithOffset);
 	LocalVelocityDirectionNoOffset = SelectLocomotionDirectionFromAngle(LocalVelocityDirectionAngle);
+
 	PivotDirectionFromAcceleration = GetOppositeCardinalDirection(SelectLocomotionDirectionFromAngle(
 		UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation)));
+
+	if (bIsFirstUpdate)
+	{
+		LocalVelocityDirectionLastUpdate = EFireflyLocomotionDirectionType::Forward;
+		LocalVelocityDirectionNoOffsetLastUpdate = EFireflyLocomotionDirectionType::Forward;
+	}
 }
 
 EFireflyLocomotionDirectionType UFireflyAnimInstance::SelectLocomotionDirectionFromAngle(float Angle)
@@ -105,20 +127,20 @@ EFireflyLocomotionDirectionType UFireflyAnimInstance::SelectLocomotionDirectionF
 	{
 		return EFireflyLocomotionDirectionType::Backward;
 	}
-	else if (AbsAngle > 22.5f && Angle <= 67.5f)
+	else if (AbsAngle > 22.5f && AbsAngle <= 67.5f)
 	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::LeftForward
-			: EFireflyLocomotionDirectionType::RightForward;
+		return Angle > 0.f ? EFireflyLocomotionDirectionType::RightForward
+			: EFireflyLocomotionDirectionType::LeftForward;
 	}
-	else if (AbsAngle > 67.5f && Angle <= 112.5f)
+	else if (AbsAngle > 67.5f && AbsAngle <= 112.5f)
 	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::Left
-			: EFireflyLocomotionDirectionType::Right;
+		return Angle > 0.f ? EFireflyLocomotionDirectionType::Right
+			: EFireflyLocomotionDirectionType::Left;
 	}
 	else
 	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::LeftBackward
-			: EFireflyLocomotionDirectionType::RightBackward;
+		return Angle > 0.f ? EFireflyLocomotionDirectionType::RightBackward
+			: EFireflyLocomotionDirectionType::LeftBackward;
 	}
 }
 
