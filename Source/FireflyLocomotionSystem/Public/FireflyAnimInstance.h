@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "FireflyLocomotionTypes.h"
+#include "Animation/AnimExecutionContext.h"
+#include "Animation/AnimNodeReference.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "FireflyAnimInstance.generated.h"
 
@@ -29,6 +31,10 @@ public:
 	// Native thread safe update override point. Executed on a worker thread just prior to graph update 
 	// for linked anim instances, only called when the hosting node(s) are relevant
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
+
+private:
+	/** 当前更新是否是第一次更新是否 */
+	bool bIsFirstUpdate = true;
 
 #pragma endregion
 
@@ -238,9 +244,4 @@ protected:
 	EFireflyRootYawOffsetModeType RootYawOffsetMode;
 
 #pragma endregion
-
-
-private:
-	/** 当前更新是否是第一次更新是否 */
-	bool bIsFirstUpdate = true;
 };
