@@ -24,5 +24,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
 	static UFireflyCharacterMovementComponent* GetFireflyCharacterMovement(APawn* InPawn);
 
+	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
+	static FTransform ExtractBoneTransformFromAnimation(const UAnimSequence* Animation, FName BoneName, float Time, bool bComponentSpace);
+
 #pragma endregion	
 };
