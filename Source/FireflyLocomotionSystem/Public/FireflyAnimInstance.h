@@ -172,11 +172,11 @@ protected:
 	void UpdateDirectionData();
 	virtual void UpdateDirectionData_Implementation();
 
-	static EFireflyLocomotionDirectionType SelectLocomotionDirectionFromAngle(float Angle);
-
-	static EFireflyLocomotionDirectionType GetOppositeCardinalDirection(EFireflyLocomotionDirectionType InDirection);
-
 protected:
+	/** 动画实例的拥有者当前的速度方向 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionMethod DirectionMethod;
+
 	/** 动画实例的拥有者当前的速度方向 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
 	EFireflyLocomotionDirectionType LocalVelocityDirection;

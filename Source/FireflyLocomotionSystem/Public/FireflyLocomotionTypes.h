@@ -7,6 +7,15 @@
 
 /** 八方向的枚举类型 */
 UENUM(BlueprintType)
+enum class EFireflyLocomotionDirectionMethod : uint8
+{
+	FourDirection,
+	SixDirection,
+	EightDirection
+};
+
+/** 八方向的枚举类型 */
+UENUM(BlueprintType)
 enum class EFireflyLocomotionDirectionType : uint8
 {
 	Forward,

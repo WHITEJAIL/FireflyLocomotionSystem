@@ -102,96 +102,20 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 	LocalVelocityDirectionLastUpdate = LocalVelocityDirection;
 	LocalVelocityDirectionNoOffsetLastUpdate = LocalVelocityDirectionNoOffset;
 
-	LocalVelocityDirection = SelectLocomotionDirectionFromAngle(LocalVelocityDirectionAngleWithOffset);
-	LocalVelocityDirectionNoOffset = SelectLocomotionDirectionFromAngle(LocalVelocityDirectionAngle);
+	LocalVelocityDirection = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
+		LocalVelocityDirectionAngleWithOffset, DirectionMethod);
+	LocalVelocityDirectionNoOffset = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
+		LocalVelocityDirectionAngleWithOffset, DirectionMethod);
 
-	PivotDirectionFromAcceleration = GetOppositeCardinalDirection(SelectLocomotionDirectionFromAngle(
-		UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation)));
+	PivotDirectionFromAcceleration = UFireflyLocomotionFunctionLibrary::GetOppositeCardinalDirection(
+		UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
+			UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation), DirectionMethod));
 
 	if (bIsFirstUpdate)
 	{
 		LocalVelocityDirectionLastUpdate = EFireflyLocomotionDirectionType::Forward;
 		LocalVelocityDirectionNoOffsetLastUpdate = EFireflyLocomotionDirectionType::Forward;
 	}
-}
-
-EFireflyLocomotionDirectionType UFireflyAnimInstance::SelectLocomotionDirectionFromAngle(float Angle)
-{
-	float AbsAngle = FMath::Abs<float>(Angle);
-
-	if (AbsAngle <= 22.5f)
-	{
-		return EFireflyLocomotionDirectionType::Forward;
-	}
-	else if (AbsAngle >= 157.5f)
-	{
-		return EFireflyLocomotionDirectionType::Backward;
-	}
-	else if (AbsAngle > 22.5f && AbsAngle <= 67.5f)
-	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::RightForward
-			: EFireflyLocomotionDirectionType::LeftForward;
-	}
-	else if (AbsAngle > 67.5f && AbsAngle <= 112.5f)
-	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::Right
-			: EFireflyLocomotionDirectionType::Left;
-	}
-	else
-	{
-		return Angle > 0.f ? EFireflyLocomotionDirectionType::RightBackward
-			: EFireflyLocomotionDirectionType::LeftBackward;
-	}
-}
-
-EFireflyLocomotionDirectionType UFireflyAnimInstance::GetOppositeCardinalDirection(EFireflyLocomotionDirectionType InDirection)
-{
-	EFireflyLocomotionDirectionType Result = EFireflyLocomotionDirectionType::Forward;
-	switch (InDirection)
-	{
-		case EFireflyLocomotionDirectionType::Forward:
-		{
-			Result = EFireflyLocomotionDirectionType::Backward;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::Backward:
-		{
-			Result = EFireflyLocomotionDirectionType::Forward;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::Right:
-		{
-			Result = EFireflyLocomotionDirectionType::Left;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::Left:
-		{
-			Result = EFireflyLocomotionDirectionType::Right;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::RightForward:
-		{
-			Result = EFireflyLocomotionDirectionType::LeftBackward;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::RightBackward:
-		{
-			Result = EFireflyLocomotionDirectionType::LeftForward;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::LeftForward:
-		{
-			Result = EFireflyLocomotionDirectionType::RightBackward;
-			break;
-		}
-		case EFireflyLocomotionDirectionType::LeftBackward:
-		{
-			Result = EFireflyLocomotionDirectionType::RightForward;
-			break;
-		}
-	}
-
-	return Result;
 }
 
 void UFireflyAnimInstance::UpdateCharacterState_Implementation()
