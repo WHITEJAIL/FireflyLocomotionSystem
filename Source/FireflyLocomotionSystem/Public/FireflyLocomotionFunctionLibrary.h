@@ -31,15 +31,6 @@ public:
 #pragma endregion
 
 
-#pragma region Transform
-
-	/** 提取指定动画序列中的某一骨骼在动画的特定时间点的Transform数据 */
-	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
-	static FTransform ExtractBoneTransformFromAnimation(const UAnimSequence* Animation, FName BoneName, float Time, bool bComponentSpace);
-
-#pragma endregion
-
-
 #pragma region Direction
 
 	/** 根据指定的角度值确认一个方向，可以只考虑四向，也可以考虑八向 */
