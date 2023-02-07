@@ -649,22 +649,18 @@ FRotator UFireflyCharacterMovementComponent::GetPhysicsDesiredRotation(float Del
 }
 #pragma optimize( "", on)
 
-float UFireflyCharacterMovementComponent::GetMaxSpeed() const
-{
-	return Super::GetMaxSpeed();
-}
-
-void UFireflyCharacterMovementComponent::UpdateMaxSpeedFirefly_Implementation()
+float UFireflyCharacterMovementComponent::UpdateMaxSpeedFirefly_Implementation()
 {
 	if (IsCrouching())
 	{
-		MaxWalkSpeedCrouched = GetIsSprinting() ? CrouchSpeed : CrouchSprintSpeed;
+		// MaxWalkSpeedCrouched = YourCustomCrouchSpeed;
 	}
 	else
 	{
-		MaxWalkSpeed = GetIsSprinting() ? SprintSpeed
-			: (GetIsWalking() ? WalkSpeed : JogSpeed);
+		// MaxWalkSpeed = YourCustomSpeed;
 	}
+
+	return GetMaxSpeed();
 }
 
 bool UFireflyCharacterMovementComponent::GetIsSprinting() const
