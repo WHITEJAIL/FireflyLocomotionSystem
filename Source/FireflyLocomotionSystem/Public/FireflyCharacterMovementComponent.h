@@ -90,11 +90,10 @@ protected:
 #pragma region VelocityMode // 移动速度模式
 
 public:
-	virtual float GetMaxSpeed() const override;
-
+	/** 根据移动输入和Character状态更新设置CharacterMovement各种状态的MaxSpeed */
 	UFUNCTION(BlueprintNativeEvent, Category = "Pawn|Components|CharacterMovement")
-	void UpdateMaxSpeedFirefly();
-	virtual void UpdateMaxSpeedFirefly_Implementation();
+	float UpdateMaxSpeedFirefly();
+	virtual float UpdateMaxSpeedFirefly_Implementation();
 
 	/** 当前是否在冲刺移动 */
 	UFUNCTION(BlueprintPure, Category = "Pawn|Components|CharacterMovement")
@@ -106,11 +105,11 @@ public:
 
 	/** 申请开启或关闭散步走 */
 	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
-	void RequestShiftWalk(bool bWantToWalk);
+	virtual void RequestShiftWalk(bool bWantToWalk);
 
 	/** 申请开启或关闭冲刺移动 */
 	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
-	void RequestShiftSprint(bool bWantToSprint);
+	virtual void RequestShiftSprint(bool bWantToSprint);
 
 protected:
 	/** 是否开启冲刺移动 */
@@ -118,26 +117,6 @@ protected:
 
 	/** 是否开启散步走 */
 	uint8 RequestToWalk : 1;
-
-	/** 散步走移动速度 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement (Speed Settings)", Meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float WalkSpeed = 100.f;
-
-	/** 慢跑移动速度 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement (Speed Settings)", Meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float JogSpeed = 600.f;
-
-	/** 冲刺移动速度 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement (Speed Settings)", Meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float SprintSpeed = 900.f;		
-
-	/** 蹲伏正常移动速度 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement (Speed Settings)", Meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float CrouchSpeed = 60.f;
-
-	/** 蹲伏加速移动速度 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Movement (Speed Settings)", Meta = (ClampMin = "0", UIMin = "0", ForceUnits = "cm/s"))
-	float CrouchSprintSpeed = 180.f;
 
 #pragma endregion
 };
