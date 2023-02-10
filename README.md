@@ -9,8 +9,10 @@
 <br>
 + 身体向前倾斜慢跑Pose：Common_Pose_Lean_F
 + 身体向后倾斜慢跑Pose：Common_Pose_Lean_B
-+ 身体向右倾斜慢跑Pose：Common_Pose_Lean_R
-+ 身体向左倾斜慢跑Pose：Common_Pose_Lean_L
++ 身体向左前倾斜慢跑Pose：Common_Pose_Lean_F_L
++ 身体向左后倾斜慢跑Pose：Common_Pose_Lean_B_L
++ 身体向右前倾斜慢跑Pose：Common_Pose_Lean_F_R
++ 身体向右后倾斜慢跑Pose：Common_Pose_Lean_B_R
 <br>
 + 站立慢走基础Pose：Common_Pose_Walk_Base
 + 站立慢跑基础Pose：Common_Pose_Jog_Base
@@ -179,10 +181,12 @@
 + 原地站立Pose：WeaponName_Pose_InPlace
 + 原地蹲伏Pose：WeaponName_Pose_InPlace_Crouch
 <br>
-+ 身体向前倾斜15°慢跑Pose（一般不需要，除非有需求需求）：WeaponName_Pose_Lean_F
-+ 身体向后倾斜15°慢跑Pose（一般不需要，除非有需求需求）：WeaponName_Pose_Lean_B
-+ 身体向右倾斜15°慢跑Pose（一般不需要，除非有需求需求）：WeaponName_Pose_Lean_R
-+ 身体向左倾斜15°慢跑Pose（一般不需要，除非有需求需求）：WeaponName_Pose_Lean_L
++ 身体向前倾斜慢跑Pose：WeaponName_Pose_Lean_F
++ 身体向后倾斜慢跑Pose：WeaponName_Pose_Lean_B
++ 身体向左前倾斜慢跑Pose：WeaponName_Pose_Lean_F_L
++ 身体向左后倾斜慢跑Pose：WeaponName_Pose_Lean_B_L
++ 身体向右前倾斜慢跑Pose：WeaponName_Pose_Lean_F_R
++ 身体向右后倾斜慢跑Pose：WeaponName_Pose_Lean_B_L
 <br>
 + 站立慢走基础Pose：WeaponName_Pose_Walk_Base
 + 站立慢跑基础Pose：WeaponName_Pose_Jog_Base
