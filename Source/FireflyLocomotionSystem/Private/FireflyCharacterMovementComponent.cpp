@@ -428,8 +428,8 @@ void UFireflyCharacterMovementComponent::PerformMovement(float DeltaTime)
 				TargetRotation.Pitch = 0.f;
 
 				FRotator CurrentRotation = CharacterOwner->GetActorRotation();
-				FRotator FinalRotation = UKismetMathLibrary::RLerp(CurrentRotation, TargetRotation, 
-					RuntimeDesiredRotationSpeed * RuntimeDesiredRotationSpeed * DeltaTime, true);
+				FRotator FinalRotation = UKismetMathLibrary::RInterpTo(CurrentRotation, TargetRotation, 
+					DeltaTime, RuntimeDesiredRotationSpeed * RuntimeDesiredRotationSpeed);
 				const FQuat RootMotionRotationQuat = FinalRotation.Quaternion();
 				if (!RootMotionRotationQuat.IsIdentity())
 				{

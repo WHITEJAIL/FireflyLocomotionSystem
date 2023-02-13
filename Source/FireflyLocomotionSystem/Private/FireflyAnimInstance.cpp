@@ -135,6 +135,8 @@ void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 		&&UKismetMathLibrary::InRange_FloatFloat(FVector::DotProduct(
 			LocalAcceleration.GetSafeNormal(1e-4), LocalVelocity.GetSafeNormal(1e-4)),
 			-0.6, 0.6);
+
+	bIsAnyMontagePlaying = IsAnyMontagePlaying();
 }
 
 void UFireflyAnimInstance::UpdateRootYawOffset_Implementation()

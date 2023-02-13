@@ -228,6 +228,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsRunningIntoWall : 1;
 
+	/** 动画实例当前是否在播放蒙太奇 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
+	uint8 bIsAnyMontagePlaying : 1;
+
 #pragma endregion
 
 
