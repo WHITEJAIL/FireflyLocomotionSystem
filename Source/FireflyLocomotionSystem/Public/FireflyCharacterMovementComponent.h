@@ -78,11 +78,11 @@ protected:
 protected:
 	/** 期望旋转在RootMotion过程中的影响速率 */
 	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0", UIMin = "0"))
-	float PhysicalDesiredRotationAlphaValueOverridingRootMotionRotation = 30.f;
+	float PhysicalDesiredRotationAlphaValueOverridingRootMotionRotation = 300.f;
 
 	/** 期望旋转在RootMotion过程中的影响速率 */
 	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0", UIMin = "0"))
-	float ControlDesiredRotationAlphaValueOverridingRootMotionRotation = 3.f;
+	float ControlDesiredRotationAlphaValueOverridingRootMotionRotation = 15.f;
 
 #pragma endregion
 
