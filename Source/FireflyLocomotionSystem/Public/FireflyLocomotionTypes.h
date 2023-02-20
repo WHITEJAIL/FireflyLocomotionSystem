@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "FireflyLocomotionTypes.generated.h"
 
-/** 八方向的枚举类型 */
+/** 方向判定的方法 */
 UENUM(BlueprintType)
 enum class EFireflyLocomotionDirectionMethod : uint8
 {
@@ -18,14 +18,14 @@ enum class EFireflyLocomotionDirectionMethod : uint8
 UENUM(BlueprintType)
 enum class EFireflyLocomotionDirectionType : uint8
 {
-	Forward,
+	Forward,	
 	Backward,
-	Right,
 	Left,
-	RightForward,
-	RightBackward,
-	LeftForward,
-	LeftBackward
+	Right,
+	FwdLeft,
+	FwdRight,
+	BwdLeft,
+	BwdRight,
 };
 
 /** 动画系统选择的根骨骼航向角偏移更新的计算方式 */
@@ -35,4 +35,36 @@ enum class EFireflyRootYawOffsetModeType : uint8
 	BlendOut,
 	Hold,
 	Accumulate
+};
+
+/** 八方向对应的动画序列 */
+USTRUCT(BlueprintType)
+struct FFireflyLocomotionDirectionalAnimationSet
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_Forward;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_Backward;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_Left;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_Right;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_FwdLeft;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_FwdRight;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_BwdLeft;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UAnimSequenceBase* Anim_BwdRight;
 };

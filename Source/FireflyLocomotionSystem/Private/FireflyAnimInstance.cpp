@@ -10,6 +10,8 @@
 void UFireflyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+
+	OwnerCharacterMovement = UFireflyLocomotionFunctionLibrary::GetCharacterMovement(TryGetPawnOwner());
 }
 
 void UFireflyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -25,8 +27,7 @@ void UFireflyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-
-	OwnerCharacterMovement = UFireflyLocomotionFunctionLibrary::GetCharacterMovement(TryGetPawnOwner());
+	
 	if (!IsValid(OwnerCharacterMovement))
 	{
 		return;

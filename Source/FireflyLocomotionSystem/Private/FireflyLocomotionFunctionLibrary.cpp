@@ -7,6 +7,11 @@
 
 UCharacterMovementComponent* UFireflyLocomotionFunctionLibrary::GetCharacterMovement(APawn* InPawn)
 {
+	if (!IsValid(InPawn))
+	{
+		return nullptr;
+	}
+
 	UActorComponent* Comp = InPawn->GetComponentByClass(UCharacterMovementComponent::StaticClass());
 	if (IsValid(Comp))
 	{
@@ -18,6 +23,11 @@ UCharacterMovementComponent* UFireflyLocomotionFunctionLibrary::GetCharacterMove
 
 UFireflyCharacterMovementComponent* UFireflyLocomotionFunctionLibrary::GetFireflyCharacterMovement(APawn* InPawn)
 {
+	if (!IsValid(InPawn))
+	{
+		return nullptr;
+	}
+
 	UActorComponent* Comp = InPawn->GetComponentByClass(UFireflyCharacterMovementComponent::StaticClass());
 	if (IsValid(Comp))
 	{
@@ -68,13 +78,13 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::SelectLocomot
 			}
 			else if (AbsAngle > 30.f && AbsAngle <= 90.f)
 			{
-				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::RightForward
-					: EFireflyLocomotionDirectionType::LeftForward;
+				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::FwdRight
+					: EFireflyLocomotionDirectionType::FwdLeft;
 			}
 			else if (AbsAngle > 90.f && AbsAngle <= 150.f)
 			{
-				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::RightBackward
-					: EFireflyLocomotionDirectionType::LeftBackward;
+				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::BwdRight
+					: EFireflyLocomotionDirectionType::BwdLeft;
 			}
 			else
 			{
@@ -94,8 +104,8 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::SelectLocomot
 			}
 			else if (AbsAngle > 22.5f && AbsAngle <= 67.5f)
 			{
-				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::RightForward
-					: EFireflyLocomotionDirectionType::LeftForward;
+				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::FwdRight
+					: EFireflyLocomotionDirectionType::FwdLeft;
 			}
 			else if (AbsAngle > 67.5f && AbsAngle <= 112.5f)
 			{
@@ -104,8 +114,8 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::SelectLocomot
 			}
 			else
 			{
-				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::RightBackward
-					: EFireflyLocomotionDirectionType::LeftBackward;
+				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::BwdRight
+					: EFireflyLocomotionDirectionType::BwdLeft;
 			}
 			break;
 		}
@@ -140,27 +150,46 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::GetOppositeCa
 			Result = EFireflyLocomotionDirectionType::Right;
 			break;
 		}
-		case EFireflyLocomotionDirectionType::RightForward:
+		case EFireflyLocomotionDirectionType::FwdRight:
 		{
-			Result = EFireflyLocomotionDirectionType::LeftBackward;
+			Result = EFireflyLocomotionDirectionType::BwdLeft;
 			break;
 		}
-		case EFireflyLocomotionDirectionType::RightBackward:
+		case EFireflyLocomotionDirectionType::BwdRight:
 		{
-			Result = EFireflyLocomotionDirectionType::LeftForward;
+			Result = EFireflyLocomotionDirectionType::FwdLeft;
 			break;
 		}
-		case EFireflyLocomotionDirectionType::LeftForward:
+		case EFireflyLocomotionDirectionType::FwdLeft:
 		{
-			Result = EFireflyLocomotionDirectionType::RightBackward;
+			Result = EFireflyLocomotionDirectionType::BwdRight;
 			break;
 		}
-		case EFireflyLocomotionDirectionType::LeftBackward:
+		case EFireflyLocomotionDirectionType::BwdLeft:
 		{
-			Result = EFireflyLocomotionDirectionType::RightForward;
+			Result = EFireflyLocomotionDirectionType::FwdRight;
 			break;
 		}
 	}
 
 	return Result;
+}
+
+UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimFromDirection(EFireflyLocomotionDirectionType Direction,
+	const FFireflyLocomotionDirectionalAnimationSet& AnimSet)
+{
+	UAnimSequenceBase* OutAnim = nullptr;
+	switch (Direction)
+	{
+	case EFireflyLocomotionDirectionType::Backward: OutAnim = AnimSet.Anim_Backward; break;
+	case EFireflyLocomotionDirectionType::BwdLeft: OutAnim = AnimSet.Anim_BwdLeft; break;
+	case EFireflyLocomotionDirectionType::BwdRight: OutAnim = AnimSet.Anim_BwdRight; break;
+	case EFireflyLocomotionDirectionType::Forward: OutAnim = AnimSet.Anim_Forward; break;
+	case EFireflyLocomotionDirectionType::FwdLeft: OutAnim = AnimSet.Anim_FwdLeft; break;
+	case EFireflyLocomotionDirectionType::FwdRight: OutAnim = AnimSet.Anim_FwdRight; break;
+	case EFireflyLocomotionDirectionType::Left: OutAnim = AnimSet.Anim_Left; break;
+	case EFireflyLocomotionDirectionType::Right: OutAnim = AnimSet.Anim_Right; break;
+	}
+
+	return OutAnim;
 }

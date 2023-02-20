@@ -32,7 +32,7 @@ public:
 	// for linked anim instances, only called when the hosting node(s) are relevant
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;
 
-private:
+protected:
 	/** 当前更新是否是第一次更新是否 */
 	bool bIsFirstUpdate = true;
 

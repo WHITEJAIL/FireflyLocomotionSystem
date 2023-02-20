@@ -42,5 +42,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
 	static EFireflyLocomotionDirectionType GetOppositeCardinalDirection(EFireflyLocomotionDirectionType InDirection);
 
+	/** 根据特定方向值从给定的动画集中确认一个动画序列 */
+	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem", Meta = (BlueprintThreadSafe))
+	static UAnimSequenceBase* GetAnimFromDirection(EFireflyLocomotionDirectionType Direction, 
+		const FFireflyLocomotionDirectionalAnimationSet& AnimSet);
+
 #pragma endregion	
 };
