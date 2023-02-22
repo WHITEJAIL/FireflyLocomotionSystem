@@ -6,6 +6,17 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "FireflyCharacterMovementComponent.generated.h"
 
+/** 移动的步态类型 */
+UENUM(BlueprintType)
+enum class EFireflyMovementGait : uint8
+{
+	Idle			UMETA(DisplayName="停步静止"),
+	Walk			UMETA(DisplayName="静步慢走"),
+	Jog				UMETA(DisplayName="轻步慢跑"),
+	Run				UMETA(DisplayName="快步奔跑"),
+	Sprint			UMETA(DisplayName="冲刺疾跑"),
+};
+
 /** 加入了自定义功能的角色运动组件 */
 UCLASS()
 class FIREFLYLOCOMOTIONSYSTEM_API UFireflyCharacterMovementComponent : public UCharacterMovementComponent
@@ -36,7 +47,8 @@ class FIREFLYLOCOMOTIONSYSTEM_API UFireflyCharacterMovementComponent : public UC
 		virtual void PrepMoveFor(class ACharacter* Character) override;
 
 		uint8 SavedRequestToSprint : 1;
-
+		uint8 SavedRequestToRun : 1;
+		uint8 SavedRequestToJog : 1;
 		uint8 SavedRequestToWalk : 1;
 	};
 
@@ -87,35 +99,67 @@ protected:
 #pragma endregion
 
 
-#pragma region VelocityMode // 移动速度模式
+#pragma region MovementGait 移动步态
 
 public:
 	/** 根据移动输入和Character状态更新设置CharacterMovement各种状态的MaxSpeed */
-	UFUNCTION(BlueprintNativeEvent, Category = "Pawn|Components|CharacterMovement")
-	float UpdateMaxSpeedFirefly();
-	virtual float UpdateMaxSpeedFirefly_Implementation();
+	virtual float UpdateMaxSpeedFirefly() { return GetMaxSpeed(); }
 
-	/** 当前是否在冲刺移动 */
+	/** 更新角色的移动步态，项目中自定义 */
+	virtual void UpdateMovementGait() {}
+
+	/** 角色的移动步态更新时处理的逻辑，项目中自定义 */
+	virtual void HandleMovementGaitChanged() {}
+
+	/** 当前是否在冲刺疾跑 */
 	UFUNCTION(BlueprintPure, Category = "Pawn|Components|CharacterMovement")
-	bool GetIsSprinting() const;
+	virtual bool GetIsSprinting() const { return RequestToSprint; }
 
-	/** 当前是否在散步走 */
+	/** 当前是否在快步奔跑 */
 	UFUNCTION(BlueprintPure, Category = "Pawn|Components|CharacterMovement")
-	bool GetIsWalking() const;	
+	virtual bool GetIsRunning() const { return RequestToRun; }
 
-	/** 申请开启或关闭散步走 */
-	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
-	virtual void RequestShiftWalk(bool bWantToWalk);
+	/** 当前是否在轻步慢跑 */
+	UFUNCTION(BlueprintPure, Category = "Pawn|Components|CharacterMovement")
+	virtual bool GetIsJogging() const { return RequestToJog; }
 
-	/** 申请开启或关闭冲刺移动 */
+	/** 当前是否在静步慢走 */
+	UFUNCTION(BlueprintPure, Category = "Pawn|Components|CharacterMovement")
+	virtual bool GetIsWalking() const { return RequestToWalk; }
+
+	/** 申请开启或关闭冲刺疾跑 */
 	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
 	virtual void RequestShiftSprint(bool bWantToSprint);
 
+	/** 申请开启或关闭快步奔跑 */
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
+	virtual void RequestShiftRun(bool bWantToRun);
+
+	/** 申请开启或关闭轻步慢跑 */
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
+	virtual void RequestShiftJog(bool bWantToJog);
+
+	/** 申请开启或关闭静步慢走 */
+	UFUNCTION(BlueprintCallable, Category = "Pawn|Components|CharacterMovement")
+	virtual void RequestShiftWalk(bool bWantToWalk);	
+
+	EFireflyMovementGait GetCurrentMovementGait() const { return CurrentMovementGait; }
+
 protected:
+	/** 角色的当前移动速度模式，默认为Jog */
+	UPROPERTY(BlueprintReadOnly, Category = "CharacterMovement")
+	EFireflyMovementGait CurrentMovementGait = EFireflyMovementGait::Jog;
+
 	/** 是否开启冲刺移动 */
 	uint8 RequestToSprint : 1;
 
-	/** 是否开启散步走 */
+	/** 是否开启快步奔跑 */
+	uint8 RequestToRun : 1;
+
+	/** 是否开启轻步慢跑 */
+	uint8 RequestToJog : 1;
+
+	/** 是否开启轻步慢跑 */
 	uint8 RequestToWalk : 1;
 
 #pragma endregion

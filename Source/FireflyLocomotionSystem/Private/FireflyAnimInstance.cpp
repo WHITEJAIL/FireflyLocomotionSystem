@@ -3,15 +3,17 @@
 
 #include "FireflyAnimInstance.h"
 
+#include "FireflyCharacterMovementComponent.h"
 #include "FireflyLocomotionFunctionLibrary.h"
 #include "KismetAnimationLibrary.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 void UFireflyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	OwnerCharacterMovement = UFireflyLocomotionFunctionLibrary::GetCharacterMovement(TryGetPawnOwner());
+	OwnerFireflyCharacterMovement = UFireflyLocomotionFunctionLibrary::GetFireflyCharacterMovement(TryGetPawnOwner());
+	CurrentMovementGait = EFireflyMovementGait::Jog;
+	LastMovementGait = EFireflyMovementGait::Jog;
 }
 
 void UFireflyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -28,7 +30,7 @@ void UFireflyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 		return;
 	}
 	
-	if (!IsValid(OwnerCharacterMovement))
+	if (!IsValid(OwnerFireflyCharacterMovement))
 	{
 		return;
 	}
@@ -91,7 +93,7 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 
 void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
 {
-	WorldAcceleration = OwnerCharacterMovement->GetCurrentAcceleration();
+	WorldAcceleration = OwnerFireflyCharacterMovement->GetCurrentAcceleration();
 	LocalAcceleration = WorldRotation.UnrotateVector(WorldAcceleration);
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
 	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(
@@ -122,12 +124,12 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 {
 	const bool bWasCrouchingLastUpdate = bIsCrouching;
-	bIsCrouching = OwnerCharacterMovement->IsCrouching();
+	bIsCrouching = OwnerFireflyCharacterMovement->IsCrouching();
 	bCrouchStateChange = bIsCrouching != bWasCrouchingLastUpdate;
 
 	bIsJumpingToApex = false;
 	bIsFallingToGround = false;
-	if (OwnerCharacterMovement->MovementMode == MOVE_Falling)
+	if (OwnerFireflyCharacterMovement->MovementMode == MOVE_Falling)
 	{
 		WorldVelocity.Z > 0.f ? bIsJumpingToApex = true : bIsFallingToGround = true;
 	}
@@ -137,6 +139,8 @@ void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 			LocalAcceleration.GetSafeNormal(1e-4), LocalVelocity.GetSafeNormal(1e-4)),
 			-0.6, 0.6);
 
+	LastMovementGait = CurrentMovementGait;
+	CurrentMovementGait = OwnerFireflyCharacterMovement->GetCurrentMovementGait();
 	bIsAnyMontagePlaying = IsAnyMontagePlaying();
 }
 

@@ -5,12 +5,11 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "FireflyLocomotionTypes.h"
-#include "Animation/AnimExecutionContext.h"
-#include "Animation/AnimNodeReference.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "FireflyAnimInstance.generated.h"
 
-class UCharacterMovementComponent;
+enum class EFireflyMovementGait : uint8;
+class UFireflyCharacterMovementComponent;
 
 /**  */
 UCLASS()
@@ -44,7 +43,7 @@ protected:
 protected:
 	/** 动画实例的拥有者携带的角色运动组件实例 */
 	UPROPERTY(BlueprintReadOnly, Category = "FireflyLocomotionSystem")
-	UCharacterMovementComponent* OwnerCharacterMovement;
+	UFireflyCharacterMovementComponent* OwnerFireflyCharacterMovement;
 
 #pragma endregion
 
@@ -133,7 +132,7 @@ protected:
 
 	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（考虑角色航向角的偏移）（上一次更新） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
-	float LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;	
+	float LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;
 
 #pragma endregion
 
@@ -231,6 +230,14 @@ protected:
 	/** 动画实例当前是否在播放蒙太奇 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsAnyMontagePlaying : 1;
+
+	/** 动画实例的拥有者当前的移动步态 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	EFireflyMovementGait CurrentMovementGait;
+
+	/** 动画实例的拥有者当前的移动步态 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	EFireflyMovementGait LastMovementGait;
 
 #pragma endregion
 

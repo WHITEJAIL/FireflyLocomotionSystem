@@ -16,6 +16,8 @@
 <br>
 + 站立慢走基础Pose：Common_Pose_Walk_Base
 + 站立慢跑基础Pose：Common_Pose_Jog_Base
++ 站立奔跑基础Pose：Common_Pose_Run_Base
++ 站立疾跑基础Pose：Common_Pose_Sprint_Base
 <br>
 + 蹲伏慢走基础Pose：Common_Pose_Crouch_Walk_Base
 + 蹲伏慢跑基础Pose：Common_Pose_Crouch_Jog_Base
@@ -40,7 +42,7 @@
 + 原地蹲伏-向左转180°：Common_InPlace_Crouch_Turn_L180
 + 原地蹲伏-向右转180°：Common_InPlace_Crouch_Turn_R180
 
-## 站立移动动画 - 走（Walk）
+## 站立移动动画 - 静步慢走（Walk）
 
 + 开始向前：Common_Walk_F_Start
 + 一直向前：Common_Walk_F_Loop
@@ -72,7 +74,7 @@
 + 结束向右后：Common_Walk_B_R_Stop
 + 向右后时不转身朝反方向走：Common_Walk_B_R_Pivot
 
-## 站立移动动画 - 慢跑（Jog）
+## 站立移动动画 - 轻步慢跑（Jog）
 
 + 开始向前：Common_Jog_F_Start
 + 一直向前：Common_Jog_F_Loop
@@ -104,13 +106,13 @@
 + 结束向右后：Common_Jog_B_R_Stop
 + 向右后时不转身朝反方向跑：Common_Run_B_R_Pivot
 
-## 站立移动动画 - 快跑（Sprint）
+## 站立移动动画 - 快步奔跑（Run）
 
-+ 开始向前：Common_Sprint_Start
-+ 一直向前：Common_Sprint_Loop
-+ 结束向前：Common_Sprint_Stop
++ 开始向前：Common_Run_Start
++ 一直向前：Common_Run_Loop
++ 结束向前：Common_Run_Stop
 
-## 蹲伏移动动画 - 走（Crouch_Walk）
+## 蹲伏移动动画 - 潜行静步慢走（Crouch_Walk）
 
 + 开始向前：Common_Crouch_Walk_F_Start
 + 一直向前：Common_Crouch_Walk_F_Loop
@@ -142,7 +144,7 @@
 + 结束向右后：Common_Crouch_Walk_B_R_Stop
 + 向右后时不转身朝反方向走：Common_Crouch_Walk_B_R_Pivot
 
-## 蹲伏移动动画 - 慢跑（Crouch_Jog）
+## 蹲伏移动动画 - 潜行轻步慢跑（Crouch_Jog）
 
 + 开始向前：Common_Crouch_Jog_F_Start
 + 一直向前：Common_Crouch_Jog_F_Loop
@@ -176,7 +178,7 @@
 
 # 持有武器动画（WeaponName）
 
-## 单帧Pose（Pose）
+## 单帧Pose（Pose，需求更新，武器的Locomotion动画和Pose归到武学套路动画下）
 
 + 原地站立Pose：WeaponName_Pose_InPlace
 + 原地蹲伏Pose：WeaponName_Pose_InPlace_Crouch
@@ -190,11 +192,13 @@
 <br>
 + 站立慢走基础Pose：WeaponName_Pose_Walk_Base
 + 站立慢跑基础Pose：WeaponName_Pose_Jog_Base
++ 站立奔跑基础Pose：WeaponName_Pose_Run_Base
++ 站立疾跑基础Pose：WeaponName_Pose_Sprint_Base
 <br>
 + 蹲伏慢走基础Pose：WeaponName_Pose_Crouch_Walk_Base
 + 蹲伏慢跑基础Pose：WeaponName_Pose_Crouch_Jog_Base
 
-## 装备切换动画（ArmorTransition）
+## 装备/收起武器动画（ArmorTransition，需求更新，装备/收起武器动画归到武学套路动画下）
 
 + 装备武器：WeaponName_Armored
 + 收起武器：WeaponName_Unarmored

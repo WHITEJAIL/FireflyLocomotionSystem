@@ -5,16 +5,17 @@
 
 #include "AI/NavigationSystemBase.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Engine/NetDriver.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/GameNetworkManager.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/GameStateBase.h"
-#include "Engine/Canvas.h"
 #include "PBDRigidsSolver.h"
 
+#include "Engine/Canvas.h"
+#include "Engine/NetDriver.h"
 #include "Engine/DemoNetDriver.h"
 #include "Engine/NetworkObjectList.h"
+#include "Engine/ScopedMovementUpdate.h"
 #include "Kismet/KismetMathLibrary.h"
 
 /** Character stats */
@@ -56,6 +57,8 @@ void UFireflyCharacterMovementComponent::FFireflySavedMove::Clear()
 	Super::Clear();
 
 	SavedRequestToSprint = false;
+	SavedRequestToRun = false;
+	SavedRequestToJog = false;
 	SavedRequestToWalk = false;
 }
 
@@ -68,9 +71,19 @@ uint8 UFireflyCharacterMovementComponent::FFireflySavedMove::GetCompressedFlags(
 		Result |= FLAG_Custom_0;
 	}
 
-	if (SavedRequestToWalk)
+	if (SavedRequestToRun)
 	{
 		Result |= FLAG_Custom_1;
+	}
+
+	if (SavedRequestToJog)
+	{
+		Result |= FLAG_Custom_2;
+	}
+
+	if (SavedRequestToWalk)
+	{
+		Result |= FLAG_Custom_3;
 	}
 
 	return Result;
@@ -81,6 +94,16 @@ bool UFireflyCharacterMovementComponent::FFireflySavedMove::CanCombineWith(const
 {
 	//Set which moves can be combined together. This will depend on the bit flags that are used.
 	if (SavedRequestToSprint != ((FFireflySavedMove*)NewMove.Get())->SavedRequestToSprint)
+	{
+		return false;
+	}
+
+	if (SavedRequestToRun != ((FFireflySavedMove*)NewMove.Get())->SavedRequestToRun)
+	{
+		return false;
+	}
+
+	if (SavedRequestToJog != ((FFireflySavedMove*)NewMove.Get())->SavedRequestToJog)
 	{
 		return false;
 	}
@@ -102,6 +125,8 @@ void UFireflyCharacterMovementComponent::FFireflySavedMove::SetMoveFor(ACharacte
 	if (CharacterMovement)
 	{
 		SavedRequestToSprint = CharacterMovement->GetIsSprinting();
+		SavedRequestToRun = CharacterMovement->GetIsRunning();
+		SavedRequestToJog = CharacterMovement->GetIsJogging();
 		SavedRequestToWalk = CharacterMovement->GetIsWalking();
 	}
 }
@@ -649,38 +674,26 @@ FRotator UFireflyCharacterMovementComponent::GetPhysicsDesiredRotation(float Del
 }
 #pragma optimize( "", on)
 
-float UFireflyCharacterMovementComponent::UpdateMaxSpeedFirefly_Implementation()
+void UFireflyCharacterMovementComponent::RequestShiftSprint(bool bWantToSprint)
 {
-	if (IsCrouching())
-	{
-		// MaxWalkSpeedCrouched = YourCustomCrouchSpeed;
-	}
-	else
-	{
-		// MaxWalkSpeed = YourCustomSpeed;
-	}
-
-	return GetMaxSpeed();
+	RequestToSprint = bWantToSprint;
+	UpdateMaxSpeedFirefly();
 }
 
-bool UFireflyCharacterMovementComponent::GetIsSprinting() const
+void UFireflyCharacterMovementComponent::RequestShiftRun(bool bWantToRun)
 {
-	return RequestToSprint;
+	RequestToRun = bWantToRun;
+	UpdateMaxSpeedFirefly();
 }
 
-bool UFireflyCharacterMovementComponent::GetIsWalking() const
+void UFireflyCharacterMovementComponent::RequestShiftJog(bool bWantToJog)
 {
-	return RequestToWalk;
+	RequestToJog = bWantToJog;
+	UpdateMaxSpeedFirefly();
 }
 
 void UFireflyCharacterMovementComponent::RequestShiftWalk(bool bWantToWalk)
 {
 	RequestToWalk = bWantToWalk;
-	UpdateMaxSpeedFirefly();
-}
-
-void UFireflyCharacterMovementComponent::RequestShiftSprint(bool bWantToSprint)
-{
-	RequestToSprint = bWantToSprint;
 	UpdateMaxSpeedFirefly();
 }
