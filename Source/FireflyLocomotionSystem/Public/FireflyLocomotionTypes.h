@@ -9,6 +9,7 @@
 UENUM(BlueprintType)
 enum class EFireflyLocomotionDirectionMethod : uint8
 {
+	TwoDirection,
 	FourDirection,
 	SixDirection,
 	EightDirection
@@ -35,6 +36,31 @@ enum class EFireflyRootYawOffsetModeType : uint8
 	BlendOut,
 	Hold,
 	Accumulate
+};
+
+/** 速度混合数据 */
+USTRUCT(BlueprintType)
+struct FFireflyVelocityBlendData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Forward = 0.f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Backward = 0.f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Left = 0.f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Right = 0.f;
+
+	FFireflyVelocityBlendData() {}
+
+	FFireflyVelocityBlendData(float InForward, float InBackward, float InLeft, float InRight)
+		: Forward(InForward), Backward(InBackward), Left(InLeft), Right(InRight) {}
 };
 
 /** 八方向对应的动画序列 */

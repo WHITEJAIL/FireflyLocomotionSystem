@@ -84,6 +84,12 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);
 	LocalVelocityDirectionAngleWithOffset = LocalVelocityDirectionAngle - RootYawOffset;
 
+	if (bHasVelocity)
+	{
+		VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
+			CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
+	}
+
 	if (bIsFirstUpdate)
 	{
 		LocalVelocityDirectionAngleLastUpdate = 0.f;
@@ -119,6 +125,37 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 		LocalVelocityDirectionLastUpdate = EFireflyLocomotionDirectionType::Forward;
 		LocalVelocityDirectionNoOffsetLastUpdate = EFireflyLocomotionDirectionType::Forward;
 	}
+}
+
+FFireflyVelocityBlendData UFireflyAnimInstance::SmoothVelocityBlendData(FFireflyVelocityBlendData Current,
+	FFireflyVelocityBlendData Target, float DeltaSeconds, float InterpSpeed)
+{
+	return FFireflyVelocityBlendData(
+		UKismetMathLibrary::FInterpTo(Current.Forward, Target.Forward, DeltaSeconds, InterpSpeed),
+		UKismetMathLibrary::FInterpTo(Current.Backward, Target.Backward, DeltaSeconds, InterpSpeed),
+		UKismetMathLibrary::FInterpTo(Current.Left, Target.Left, DeltaSeconds, InterpSpeed),
+		UKismetMathLibrary::FInterpTo(Current.Right, Target.Right, DeltaSeconds, InterpSpeed)
+	);
+}
+
+FFireflyVelocityBlendData UFireflyAnimInstance::CalculateVelocityBlendData() const
+{
+	const FVector LocalVelocityUnit = UKismetMathLibrary::Normal(LocalVelocity);
+	const float LocalVelocityUnitX = LocalVelocityUnit.X;
+	const float LocalVelocityUnitY = LocalVelocityUnit.Y;
+	const float LocalVelocityUnitZ = LocalVelocityUnit.Z;
+	const float LocalSum = FMath::Abs<float>(LocalVelocityUnitX) + FMath::Abs<float>(LocalVelocityUnitY)
+		+ FMath::Abs<float>(LocalVelocityUnitZ);
+	const FVector LocalRelativeDirection = FVector(
+		UKismetMathLibrary::SafeDivide(LocalVelocityUnitX, LocalSum),
+		UKismetMathLibrary::SafeDivide(LocalVelocityUnitY, LocalSum),
+		UKismetMathLibrary::SafeDivide(LocalVelocityUnitZ, LocalSum));
+
+	return FFireflyVelocityBlendData(
+		UKismetMathLibrary::FClamp(LocalRelativeDirection.X, 0.f, 1.f),
+		UKismetMathLibrary::FClamp(LocalRelativeDirection.X, -1.f, 0.f),
+		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, -1.f, 0.f),
+		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, 0.f, 1.f));
 }
 
 void UFireflyAnimInstance::UpdateCharacterState_Implementation()

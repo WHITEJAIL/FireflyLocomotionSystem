@@ -45,6 +45,27 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::SelectLocomot
 
 	switch (DirectionMethod)
 	{
+	case EFireflyLocomotionDirectionMethod::TwoDirection:
+		{
+			if (AbsAngle <= 75.f)
+			{
+				Result = EFireflyLocomotionDirectionType::Forward;
+			}
+			else if (AbsAngle >= 115.f)
+			{
+				Result = EFireflyLocomotionDirectionType::Backward;
+			}
+			else if (AbsAngle > 75.f && AbsAngle <= 115.f)
+			{
+				Result = Angle > 0.f ? EFireflyLocomotionDirectionType::Right
+					: EFireflyLocomotionDirectionType::Left;
+			}
+			else
+			{
+				Result = EFireflyLocomotionDirectionType::Forward;
+			}
+			break;
+		}
 	case EFireflyLocomotionDirectionMethod::FourDirection:
 		{
 			if (AbsAngle <= 45.f)

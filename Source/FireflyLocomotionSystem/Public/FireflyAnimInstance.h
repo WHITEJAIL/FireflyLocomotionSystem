@@ -103,7 +103,7 @@ protected:
 protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
 	void UpdateVelocityData();
-	virtual void UpdateVelocityData_Implementation();
+	virtual void UpdateVelocityData_Implementation();	
 
 protected:
 	/** 动画实例的拥有者当前是否拥有速度矢量 */
@@ -171,6 +171,11 @@ protected:
 	void UpdateDirectionData();
 	virtual void UpdateDirectionData_Implementation();
 
+	virtual FFireflyVelocityBlendData SmoothVelocityBlendData(FFireflyVelocityBlendData Current,
+		FFireflyVelocityBlendData Target, float DeltaSeconds, float InterpSpeed);
+
+	virtual FFireflyVelocityBlendData CalculateVelocityBlendData() const;
+
 protected:
 	/** 动画实例的拥有者当前的速度方向 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
@@ -195,6 +200,10 @@ protected:
 	/** 动画实例的拥有者当前的加速度方向的回转方向（用于回转运动） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
 	EFireflyLocomotionDirectionType PivotDirectionFromAcceleration;
+
+	/** 动画实例的拥有者当前速度混合数据 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	FFireflyVelocityBlendData VelocityBlendData;
 
 #pragma endregion
 
