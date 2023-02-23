@@ -4,6 +4,7 @@
 #include "FireflyLocomotionFunctionLibrary.h"
 
 #include "FireflyCharacterMovementComponent.h"
+#include "FireflyLocomotionAnimSet.h"
 
 UCharacterMovementComponent* UFireflyLocomotionFunctionLibrary::GetCharacterMovement(APawn* InPawn)
 {
@@ -196,7 +197,7 @@ EFireflyLocomotionDirectionType UFireflyLocomotionFunctionLibrary::GetOppositeCa
 	return Result;
 }
 
-UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimFromDirection(EFireflyLocomotionDirectionType Direction,
+UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimationFromDirection(EFireflyLocomotionDirectionType Direction,
 	const FFireflyLocomotionDirectionalAnimationSet& AnimSet)
 {
 	UAnimSequenceBase* OutAnim = nullptr;
@@ -210,6 +211,73 @@ UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimFromDirection(EFire
 	case EFireflyLocomotionDirectionType::FwdRight: OutAnim = AnimSet.Anim_FwdRight; break;
 	case EFireflyLocomotionDirectionType::Left: OutAnim = AnimSet.Anim_Left; break;
 	case EFireflyLocomotionDirectionType::Right: OutAnim = AnimSet.Anim_Right; break;
+	}
+
+	return OutAnim;
+}
+
+#define ANIMATION_SELECTOR_BY_STAGE(Stage) \
+	{ \
+		switch (StageType) \
+		{ \
+			case EFireflyLocomotionStageType::Start: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_##Stage##_Start); break; \
+			case EFireflyLocomotionStageType::Loop: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_##Stage##_Loop); break; \
+			case EFireflyLocomotionStageType::Stop: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_##Stage##_Stop); break; \
+			case EFireflyLocomotionStageType::Pivot: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_##Stage##_Pivot); break; \
+			case EFireflyLocomotionStageType::InPlace: break; \
+		} \
+		break; \
+	}
+
+#define CROUCH_ANIMATION_SELECTOR_BY_STAGE(Stage) \
+	{ \
+		switch (StageType) \
+		{ \
+			case EFireflyLocomotionStageType::Start: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_Crouch_##Stage##_Start); break; \
+			case EFireflyLocomotionStageType::Loop: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_Crouch_##Stage##_Loop); break; \
+			case EFireflyLocomotionStageType::Stop: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_Crouch_##Stage##_Stop); break; \
+			case EFireflyLocomotionStageType::Pivot: OutAnim = GetAnimationFromDirection(Direction, AnimSet->AnimSet_Crouch_##Stage##_Pivot); break; \
+			case EFireflyLocomotionStageType::InPlace: break; \
+		} \
+		break; \
+	}
+
+UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetMovementAnimationFromLocomotionSet(
+	const UFireflyLocomotionAnimSet* AnimSet, bool bIsCrouching, 
+	EFireflyLocomotionDirectionType Direction, EFireflyMovementGait MovementGait,
+	EFireflyLocomotionStageType StageType)
+{
+	UAnimSequenceBase* OutAnim = nullptr;
+	switch (MovementGait)
+	{
+	case EFireflyMovementGait::Walk:
+		{
+			if (bIsCrouching)
+			{
+				CROUCH_ANIMATION_SELECTOR_BY_STAGE(Walk)
+			}
+
+			ANIMATION_SELECTOR_BY_STAGE(Walk)
+		}
+	case EFireflyMovementGait::Jog:
+		{
+			if (bIsCrouching)
+			{
+				CROUCH_ANIMATION_SELECTOR_BY_STAGE(Jog)
+			}
+
+			ANIMATION_SELECTOR_BY_STAGE(Jog)
+		}
+	case EFireflyMovementGait::Run:
+		{
+			ANIMATION_SELECTOR_BY_STAGE(Run)
+		}
+	case EFireflyMovementGait::Sprint:
+		{
+			ANIMATION_SELECTOR_BY_STAGE(Sprint)
+		}
+	case EFireflyMovementGait::Idle:
+		break;
 	}
 
 	return OutAnim;

@@ -676,24 +676,48 @@ FRotator UFireflyCharacterMovementComponent::GetPhysicsDesiredRotation(float Del
 
 void UFireflyCharacterMovementComponent::RequestShiftSprint(bool bWantToSprint)
 {
+	if (RequestToSprint == bWantToSprint)
+	{
+		return;
+	}
+
 	RequestToSprint = bWantToSprint;
+	TargetMovementGait = RequestToSprint ? EFireflyMovementGait::Sprint : EFireflyMovementGait::Jog;
 	UpdateMaxSpeedFirefly();
 }
 
 void UFireflyCharacterMovementComponent::RequestShiftRun(bool bWantToRun)
 {
+	if (RequestToRun == bWantToRun)
+	{
+		return;
+	}
+
 	RequestToRun = bWantToRun;
+	TargetMovementGait = RequestToRun ? EFireflyMovementGait::Run : EFireflyMovementGait::Jog;
 	UpdateMaxSpeedFirefly();
 }
 
 void UFireflyCharacterMovementComponent::RequestShiftJog(bool bWantToJog)
 {
+	if (RequestToJog == bWantToJog)
+	{
+		return;
+	}
+
 	RequestToJog = bWantToJog;
+	TargetMovementGait = EFireflyMovementGait::Jog;
 	UpdateMaxSpeedFirefly();
 }
 
 void UFireflyCharacterMovementComponent::RequestShiftWalk(bool bWantToWalk)
 {
+	if (RequestToWalk == bWantToWalk)
+	{
+		return;
+	}
+
 	RequestToWalk = bWantToWalk;
+	TargetMovementGait = RequestToWalk ? EFireflyMovementGait::Walk : EFireflyMovementGait::Jog;
 	UpdateMaxSpeedFirefly();
 }

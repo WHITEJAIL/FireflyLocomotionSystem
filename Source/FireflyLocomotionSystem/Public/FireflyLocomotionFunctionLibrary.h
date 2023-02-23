@@ -7,6 +7,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "FireflyLocomotionFunctionLibrary.generated.h"
 
+class UFireflyLocomotionAnimSet;
 class UCharacterMovementComponent;
 class UFireflyCharacterMovementComponent;
 
@@ -44,8 +45,14 @@ public:
 
 	/** 根据特定方向值从给定的动画集中确认一个动画序列 */
 	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem", Meta = (BlueprintThreadSafe))
-	static UAnimSequenceBase* GetAnimFromDirection(EFireflyLocomotionDirectionType Direction, 
+	static UAnimSequenceBase* GetAnimationFromDirection(EFireflyLocomotionDirectionType Direction, 
 		const FFireflyLocomotionDirectionalAnimationSet& AnimSet);
+
+	/** 根据特定方向值从给定的动画集中确认一个动画序列 */
+	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem", Meta = (BlueprintThreadSafe))
+	static UAnimSequenceBase* GetMovementAnimationFromLocomotionSet(const UFireflyLocomotionAnimSet* AnimSet, 
+		bool bIsCrouching, EFireflyLocomotionDirectionType Direction,
+		EFireflyMovementGait MovementGait, EFireflyLocomotionStageType StageType);
 
 #pragma endregion	
 };

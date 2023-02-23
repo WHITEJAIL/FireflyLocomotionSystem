@@ -80,13 +80,35 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Walk")
 	FFireflyLocomotionDirectionalAnimationSet AnimSet_Walk_Loop;
 
-	/** 动画集：站立状态快步奔跑的停止移动 */
+	/** 动画集：站立状态静步慢走的停止移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Walk")
 	FFireflyLocomotionDirectionalAnimationSet AnimSet_Walk_Stop;
 
-	/** 动画集：站立状态冲刺疾跑的移动回转 */
+	/** 动画集：站立状态静步慢走的移动回转 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Walk")
 	FFireflyLocomotionDirectionalAnimationSet AnimSet_Walk_Pivot;
+
+#pragma endregion
+
+
+#pragma region Crouch_Walk
+
+public:
+	/** 动画集：蹲伏状态静步慢走的开始移动 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Walk")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Walk_Start;
+
+	/** 动画集：蹲伏状态静步慢走的移动循环 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Walk")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Walk_Loop;
+
+	/** 动画集：蹲伏状态静步慢走的停止移动 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Walk")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Walk_Stop;
+
+	/** 动画集：蹲伏状态静步慢走的移动回转 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Walk")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Walk_Pivot;
 
 #pragma endregion
 
@@ -94,21 +116,43 @@ public:
 #pragma region Jog
 
 public:
-	/** 动画集：站立状态静步慢走的开始移动 */
+	/** 动画集：站立状态轻步慢跑的开始移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Jog")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_Start;
 
-	/** 动画集：站立状态静步慢走的移动循环 */
+	/** 动画集：站立状态轻步慢跑的移动循环 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Jog")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_Loop;
 
-	/** 动画集：站立状态快步奔跑的停止移动 */
+	/** 动画集：站立状态轻步慢跑的停止移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Jog")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_Stop;
 
-	/** 动画集：站立状态冲刺疾跑的移动回转 */
+	/** 动画集：站立状态轻步慢跑的移动回转 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Jog")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_Pivot;
+
+#pragma endregion
+
+
+#pragma region Crouch_Jog
+
+public:
+	/** 动画集：蹲伏状态轻步慢跑的开始移动 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Jog")
+		FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Jog_Start;
+
+	/** 动画集：蹲伏状态轻步慢跑的移动循环 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Jog")
+		FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Jog_Loop;
+
+	/** 动画集：蹲伏状态轻步慢跑的停止移动 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Jog")
+		FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Jog_Stop;
+
+	/** 动画集：蹲伏状态轻步慢跑的移动回转 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Crouch Jog")
+		FFireflyLocomotionDirectionalAnimationSet AnimSet_Crouch_Jog_Pivot;
 
 #pragma endregion
 
@@ -116,11 +160,11 @@ public:
 #pragma region Run
 
 public:
-	/** 动画集：站立状态静步慢走的开始移动 */
+	/** 动画集：站立状态快步奔跑的开始移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Start;
 
-	/** 动画集：站立状态静步慢走的移动循环 */
+	/** 动画集：站立状态快步奔跑的移动循环 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Loop;
 
@@ -128,7 +172,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Stop;
 
-	/** 动画集：站立状态冲刺疾跑的移动回转 */
+	/** 动画集：站立状态快步奔跑的移动回转 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Pivot;
 
@@ -138,15 +182,15 @@ public:
 #pragma region Sprint
 
 public:
-	/** 动画集：站立状态静步慢走的开始移动 */
+	/** 动画集：站立状态冲刺疾跑的开始移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Sprint")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Sprint_Start;
 
-	/** 动画集：站立状态静步慢走的移动循环 */
+	/** 动画集：站立状态冲刺疾跑的移动循环 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Sprint")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Sprint_Loop;
 
-	/** 动画集：站立状态快步奔跑的停止移动 */
+	/** 动画集：站立状态冲刺疾跑的停止移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Sprint")
 		FFireflyLocomotionDirectionalAnimationSet AnimSet_Sprint_Stop;
 

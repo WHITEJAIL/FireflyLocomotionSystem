@@ -5,6 +5,28 @@
 #include "CoreMinimal.h"
 #include "FireflyLocomotionTypes.generated.h"
 
+/** 移动的步态类型 */
+UENUM(BlueprintType)
+enum class EFireflyMovementGait : uint8
+{
+	Idle			UMETA(DisplayName="停步静止"),
+	Walk			UMETA(DisplayName="静步慢走"),
+	Jog				UMETA(DisplayName="轻步慢跑"),
+	Run				UMETA(DisplayName="快步奔跑"),
+	Sprint			UMETA(DisplayName="冲刺疾跑"),
+};
+
+/** 移动的阶段类型 */
+UENUM(BlueprintType)
+enum class EFireflyLocomotionStageType : uint8
+{
+	InPlace			UMETA(DisplayName="原地静止"),
+	Start			UMETA(DisplayName="开始移动"),
+	Loop			UMETA(DisplayName="持续移动"),
+	Stop			UMETA(DisplayName="停止移动"),
+	Pivot			UMETA(DisplayName="移动回转"),
+};
+
 /** 方向判定的方法 */
 UENUM(BlueprintType)
 enum class EFireflyLocomotionDirectionMethod : uint8

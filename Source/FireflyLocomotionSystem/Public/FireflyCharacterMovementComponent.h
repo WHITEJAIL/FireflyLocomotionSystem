@@ -4,18 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "FireflyLocomotionTypes.h"
 #include "FireflyCharacterMovementComponent.generated.h"
-
-/** 移动的步态类型 */
-UENUM(BlueprintType)
-enum class EFireflyMovementGait : uint8
-{
-	Idle			UMETA(DisplayName="停步静止"),
-	Walk			UMETA(DisplayName="静步慢走"),
-	Jog				UMETA(DisplayName="轻步慢跑"),
-	Run				UMETA(DisplayName="快步奔跑"),
-	Sprint			UMETA(DisplayName="冲刺疾跑"),
-};
 
 /** 加入了自定义功能的角色运动组件 */
 UCLASS()
@@ -81,7 +71,7 @@ public:
 #pragma endregion
 
 
-#pragma region RotationControl // 定制化
+#pragma region RotationControl 旋转控制
 
 protected:
 	/** 获取物理运动期望的旋转值 */
@@ -90,11 +80,11 @@ protected:
 protected:
 	/** 期望旋转在RootMotion过程中的影响速率 */
 	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0", UIMin = "0"))
-	float PhysicalDesiredRotationAlphaValueOverridingRootMotionRotation = 300.f;
+	float PhysicalDesiredRotationAlphaValueOverridingRootMotionRotation = 15.f;
 
 	/** 期望旋转在RootMotion过程中的影响速率 */
 	UPROPERTY(Category = "Character Movement (Rotation Settings)", EditAnywhere, BlueprintReadWrite, Meta = (ClampMin = "0", UIMin = "0"))
-	float ControlDesiredRotationAlphaValueOverridingRootMotionRotation = 15.f;
+	float ControlDesiredRotationAlphaValueOverridingRootMotionRotation = 1.5f;
 
 #pragma endregion
 
@@ -145,10 +135,16 @@ public:
 
 	EFireflyMovementGait GetCurrentMovementGait() const { return CurrentMovementGait; }
 
+	EFireflyMovementGait GetTargetMovementGait() const { return TargetMovementGait; }
+
 protected:
 	/** 角色的当前移动速度模式，默认为Jog */
 	UPROPERTY(BlueprintReadOnly, Category = "CharacterMovement")
 	EFireflyMovementGait CurrentMovementGait = EFireflyMovementGait::Jog;
+
+	/** 角色的目标移动速度模式，默认为Jog */
+	UPROPERTY(BlueprintReadOnly, Category = "CharacterMovement")
+	EFireflyMovementGait TargetMovementGait = EFireflyMovementGait::Jog;
 
 	/** 是否开启冲刺移动 */
 	uint8 RequestToSprint : 1;

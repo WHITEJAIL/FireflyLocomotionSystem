@@ -51,7 +51,7 @@ protected:
 #pragma region LocationData
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateLocationData();
 	virtual void UpdateLocationData_Implementation();
 
@@ -74,7 +74,7 @@ protected:
 #pragma region RotationData
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateRotationData();
 	virtual void UpdateRotationData_Implementation();
 
@@ -101,7 +101,7 @@ protected:
 #pragma region VelocityData
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateVelocityData();
 	virtual void UpdateVelocityData_Implementation();	
 
@@ -140,7 +140,7 @@ protected:
 #pragma region AccelerationData
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateAccelerationData();
 	virtual void UpdateAccelerationData_Implementation();
 
@@ -167,7 +167,7 @@ protected:
 #pragma region DirectionData
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateDirectionData();
 	virtual void UpdateDirectionData_Implementation();
 
@@ -211,7 +211,7 @@ protected:
 #pragma region CharacterState
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateCharacterState();
 	virtual void UpdateCharacterState_Implementation();
 
@@ -244,9 +244,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	EFireflyMovementGait CurrentMovementGait;
 
-	/** 动画实例的拥有者当前的移动步态 */
+	/** 动画实例的拥有者期望的移动步态 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	EFireflyMovementGait LastMovementGait;
+	EFireflyMovementGait TargetMovementGait;
 
 #pragma endregion
 
@@ -254,15 +254,19 @@ protected:
 #pragma region RootYawOffset
 
 protected:
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateRootYawOffset();
 	virtual void UpdateRootYawOffset_Implementation();
 
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void SetRootYawOffset(float InRootYawOffset);
 	virtual void SetRootYawOffset_Implementation(float InRootYawOffset);
 
 protected:
+	/** 动画实例的拥有者当前是否允许计算根航向的偏移 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|RootYawOffset")
+	bool bEnableRootYawOffset = true;
+
 	/** 动画实例的拥有者当前航向角的偏移量 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
 	float RootYawOffset = 0.f;
@@ -278,6 +282,14 @@ protected:
 	/** 动画实例的拥有者当前航向角偏移的计算方式 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RootYawOffset")
 	EFireflyRootYawOffsetModeType RootYawOffsetMode;
+
+	/** 动画实例的拥有者当前航向角偏移的范围 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|RootYawOffset", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
+	FVector2D RootYawOffsetAngleRange = FVector2D(-120.f, 100.f);
+
+	/** 动画实例的拥有者当前蹲伏时航向角偏移的范围 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|RootYawOffset", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
+	FVector2D RootYawOffsetAngleRangeCrouched = FVector2D(-90.f, 80.f);
 
 #pragma endregion
 };

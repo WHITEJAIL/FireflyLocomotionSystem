@@ -13,7 +13,7 @@ void UFireflyAnimInstance::NativeInitializeAnimation()
 
 	OwnerFireflyCharacterMovement = UFireflyLocomotionFunctionLibrary::GetFireflyCharacterMovement(TryGetPawnOwner());
 	CurrentMovementGait = EFireflyMovementGait::Jog;
-	LastMovementGait = EFireflyMovementGait::Jog;
+	TargetMovementGait = EFireflyMovementGait::Jog;
 }
 
 void UFireflyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -41,6 +41,7 @@ void UFireflyAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 	UpdateAccelerationData();
 	UpdateDirectionData();
 	UpdateCharacterState();
+	UpdateRootYawOffset();
 
 	bIsFirstUpdate = false;
 }
@@ -176,15 +177,39 @@ void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 			LocalAcceleration.GetSafeNormal(1e-4), LocalVelocity.GetSafeNormal(1e-4)),
 			-0.6, 0.6);
 
-	LastMovementGait = CurrentMovementGait;
 	CurrentMovementGait = OwnerFireflyCharacterMovement->GetCurrentMovementGait();
+	TargetMovementGait = OwnerFireflyCharacterMovement->GetTargetMovementGait();
 	bIsAnyMontagePlaying = IsAnyMontagePlaying();
 }
 
 void UFireflyAnimInstance::UpdateRootYawOffset_Implementation()
 {
+	if (RootYawOffsetMode == EFireflyRootYawOffsetModeType::Accumulate)
+	{
+		SetRootYawOffset(RootYawOffset - YawDeltaSinceLastUpdate);
+	}
+
+	if (RootYawOffsetMode == EFireflyRootYawOffsetModeType::BlendOut)
+	{
+		SetRootYawOffset(UKismetMathLibrary::FloatSpringInterp(RootYawOffset, 0.f, RootYawOffsetSpringState, 
+			80.f, 1.f, GetDeltaSeconds(), 1.f, 0.5f));
+	}
+
+	RootYawOffsetMode = EFireflyRootYawOffsetModeType::BlendOut;
 }
 
 void UFireflyAnimInstance::SetRootYawOffset_Implementation(float InRootYawOffset)
 {
+	if (!bEnableRootYawOffset)
+	{
+		RootYawOffset = 0.f;
+	}
+
+	// We clamp the offset because at large offsets the character has to aim too far backwards, which over twists the spine.
+	// The turn in place animations will usually keep up with the offset, but this clamp will cause the feet to slide if the user rotates the camera too quickly.
+	// If desired, this clamp could be replaced by having aim animations that can go up to 180 degrees or by triggering turn in place animations more aggressively.
+
+	FVector2D CurrentRange = bIsCrouching ? RootYawOffsetAngleRangeCrouched : RootYawOffsetAngleRange;
+	RootYawOffset = CurrentRange.X != CurrentRange.Y ? UKismetMathLibrary::ClampAngle(FRotator::NormalizeAxis(InRootYawOffset),
+		CurrentRange.X, CurrentRange.Y) : FRotator::NormalizeAxis(InRootYawOffset);
 }
