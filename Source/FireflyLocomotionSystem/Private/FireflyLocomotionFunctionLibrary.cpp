@@ -216,7 +216,7 @@ UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimationFromDirection(
 	return OutAnim;
 }
 
-#define ANIMATION_SELECTOR_BY_STAGE(Stage) \
+#define ANIMATION_SELECTOR_BY_GAIT(Stage) \
 	{ \
 		switch (StageType) \
 		{ \
@@ -229,7 +229,7 @@ UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetAnimationFromDirection(
 		break; \
 	}
 
-#define CROUCH_ANIMATION_SELECTOR_BY_STAGE(Stage) \
+#define CROUCH_ANIMATION_SELECTOR_BY_GAIT(Stage) \
 	{ \
 		switch (StageType) \
 		{ \
@@ -254,27 +254,27 @@ UAnimSequenceBase* UFireflyLocomotionFunctionLibrary::GetMovementAnimationFromLo
 		{
 			if (bIsCrouching)
 			{
-				CROUCH_ANIMATION_SELECTOR_BY_STAGE(Walk)
+				CROUCH_ANIMATION_SELECTOR_BY_GAIT(Walk)
 			}
 
-			ANIMATION_SELECTOR_BY_STAGE(Walk)
+			ANIMATION_SELECTOR_BY_GAIT(Walk)
 		}
 	case EFireflyMovementGait::Jog:
 		{
 			if (bIsCrouching)
 			{
-				CROUCH_ANIMATION_SELECTOR_BY_STAGE(Jog)
+				CROUCH_ANIMATION_SELECTOR_BY_GAIT(Jog)
 			}
 
-			ANIMATION_SELECTOR_BY_STAGE(Jog)
+			ANIMATION_SELECTOR_BY_GAIT(Jog)
 		}
 	case EFireflyMovementGait::Run:
 		{
-			ANIMATION_SELECTOR_BY_STAGE(Run)
+			ANIMATION_SELECTOR_BY_GAIT(Run)
 		}
 	case EFireflyMovementGait::Sprint:
 		{
-			ANIMATION_SELECTOR_BY_STAGE(Sprint)
+			ANIMATION_SELECTOR_BY_GAIT(Sprint)
 		}
 	case EFireflyMovementGait::Idle:
 		break;
