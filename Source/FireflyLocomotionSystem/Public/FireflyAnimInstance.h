@@ -181,6 +181,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
 	EFireflyLocomotionDirectionMethod DirectionMethod;
 
+	/** 动画实例的拥有者开始移动时的方向 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
+	EFireflyLocomotionDirectionType StartDirection;
+
 	/** 动画实例的拥有者当前的速度方向 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
 	EFireflyLocomotionDirectionType LocalVelocityDirection;
