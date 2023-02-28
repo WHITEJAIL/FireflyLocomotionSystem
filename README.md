@@ -7,20 +7,11 @@
 + 原地站立Pose：Common_Pose_InPlace
 + 原地蹲伏Pose：Common_Pose_InPlace_Crouch
 <br>
++ 身体没有倾斜慢跑Pose：Common_Pose_Lean_I
 + 身体向前倾斜慢跑Pose：Common_Pose_Lean_F
 + 身体向后倾斜慢跑Pose：Common_Pose_Lean_B
-+ 身体向左前倾斜慢跑Pose：Common_Pose_Lean_F_L
-+ 身体向左后倾斜慢跑Pose：Common_Pose_Lean_B_L
-+ 身体向右前倾斜慢跑Pose：Common_Pose_Lean_F_R
-+ 身体向右后倾斜慢跑Pose：Common_Pose_Lean_B_R
-<br>
-+ 站立慢走基础Pose：Common_Pose_Walk_Base
-+ 站立慢跑基础Pose：Common_Pose_Jog_Base
-+ 站立奔跑基础Pose：Common_Pose_Run_Base
-+ 站立疾跑基础Pose：Common_Pose_Sprint_Base
-<br>
-+ 蹲伏慢走基础Pose：Common_Pose_Crouch_Walk_Base
-+ 蹲伏慢跑基础Pose：Common_Pose_Crouch_Jog_Base
++ 身体向左倾斜慢跑Pose：Common_Pose_Lean_L
++ 身体向右倾斜慢跑Pose：Common_Pose_Lean_R
 
 ## 原地动画（InPlace）
 
@@ -111,6 +102,8 @@
 + 开始向前：Common_Run_Start
 + 一直向前：Common_Run_Loop
 + 结束向前：Common_Run_Stop
++ 奔跑时转身朝反方向跑：Common_Run_Turn
++ 向前慢跑过渡到向前奔跑：Common_Jog_To_Run
 
 ## 蹲伏移动动画 - 潜行静步慢走（Crouch_Walk）
 
@@ -178,27 +171,18 @@
 
 # 持有武器动画（WeaponName）
 
-## 单帧Pose（Pose，需求更新，武器的Locomotion动画和Pose归到武学套路动画下）
+## 单帧Pose（Pose）
 
 + 原地站立Pose：WeaponName_Pose_InPlace
 + 原地蹲伏Pose：WeaponName_Pose_InPlace_Crouch
 <br>
++ 身体没有倾斜慢跑Pose：WeaponName_Pose_Lean_I
 + 身体向前倾斜慢跑Pose：WeaponName_Pose_Lean_F
 + 身体向后倾斜慢跑Pose：WeaponName_Pose_Lean_B
-+ 身体向左前倾斜慢跑Pose：WeaponName_Pose_Lean_F_L
-+ 身体向左后倾斜慢跑Pose：WeaponName_Pose_Lean_B_L
-+ 身体向右前倾斜慢跑Pose：WeaponName_Pose_Lean_F_R
-+ 身体向右后倾斜慢跑Pose：WeaponName_Pose_Lean_B_L
-<br>
-+ 站立慢走基础Pose：WeaponName_Pose_Walk_Base
-+ 站立慢跑基础Pose：WeaponName_Pose_Jog_Base
-+ 站立奔跑基础Pose：WeaponName_Pose_Run_Base
-+ 站立疾跑基础Pose：WeaponName_Pose_Sprint_Base
-<br>
-+ 蹲伏慢走基础Pose：WeaponName_Pose_Crouch_Walk_Base
-+ 蹲伏慢跑基础Pose：WeaponName_Pose_Crouch_Jog_Base
++ 身体向左倾斜慢跑Pose：WeaponName_Pose_Lean_L
++ 身体向右倾斜慢跑Pose：WeaponName_Pose_Lean_R
 
-## 装备/收起武器动画（ArmorTransition，需求更新，装备/收起武器动画归到武学套路动画下）
+## 装备/收起武器动画（ArmorTransition）
 
 + 装备武器：WeaponName_Armored
 + 收起武器：WeaponName_Unarmored
