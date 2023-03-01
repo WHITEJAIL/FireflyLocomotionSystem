@@ -166,7 +166,7 @@ public:
 
 	/** 动画集：站立状态快步奔跑的移动循环 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
-	FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Loop;
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Run_Loop;	
 
 	/** 动画集：站立状态快步奔跑的停止移动 */
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Run")
@@ -201,24 +201,32 @@ public:
 #pragma endregion
 
 
-#pragma region Pose
+#pragma region Embellishment
 
 public:
-	/** 动画Pose：原地站立 */
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pose")
+	/** 修饰动画：原地站立Pose */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
 	UAnimSequence* AnimPose_Idle;
 
-	/** 动画Pose：原地蹲伏 */
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pose")
-	UAnimSequence* AnimPose_Crouch_Idle;
+	/** 修饰动画：原地蹲伏Pose */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
+	UAnimSequence* AnimPose_Crouch_Idle;	
 
-	/** 动画Pose：身体没有倾斜慢跑Pose */
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Pose")
-	UAnimSequence* AnimPose_Lean_I;
+	/** 修饰动画：身体没有倾斜的慢跑Pose */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
+	UAnimSequence* AnimPose_Jog_Lean_I;
 
-	/** 动画集：移动偏移Pose */
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Sprint")
-	FFireflyLocomotionDirectionalAnimationSet AnimSet_Lean;
+	/** 修饰动画：向前慢跑倾斜成向前奔跑 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
+	UAnimSequence* Anim_Jog_To_Run_Impulse;
+
+	/** 修饰动画集：身体有倾斜的慢跑偏移Pose */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_LeanPose;
+
+	/** 修饰动画集：原地不动或静步慢走过渡到慢跑需要的加速倾斜动画 */
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Embellishment")
+	FFireflyLocomotionDirectionalAnimationSet AnimSet_Jog_Acceleration;
 
 #pragma endregion
 };
