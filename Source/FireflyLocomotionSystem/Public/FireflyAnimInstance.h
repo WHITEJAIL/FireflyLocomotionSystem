@@ -103,7 +103,7 @@ protected:
 protected:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = FireflyLocomoitionSystem, Meta = (BlueprintThreadSafe = true))
 	void UpdateVelocityData();
-	virtual void UpdateVelocityData_Implementation();	
+	virtual void UpdateVelocityData_Implementation();
 
 protected:
 	/** 动画实例的拥有者当前是否拥有速度矢量 */
@@ -161,6 +161,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector PivotDirection = FVector::ZeroVector;
 
+	/** 动画实例的拥有者当前的加速度比率 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
+	FVector RelativeAccelerationAmount;
+
 #pragma endregion
 
 
@@ -175,6 +179,11 @@ protected:
 		FFireflyVelocityBlendData Target, float DeltaSeconds, float InterpSpeed);
 
 	virtual FFireflyVelocityBlendData CalculateVelocityBlendData() const;
+
+	virtual FFireflyLeanAmountData SmoothLeanAmountData(FFireflyLeanAmountData Current,
+		FFireflyLeanAmountData Target, float DeltaSeconds, float InterpSpeed);
+
+	virtual FVector CalculateRelativeAccelerationAmount();
 
 protected:
 	/** 动画实例的拥有者当前的速度方向 */
@@ -206,8 +215,12 @@ protected:
 	EFireflyLocomotionDirectionType PivotDirectionFromAcceleration;
 
 	/** 动画实例的拥有者当前速度混合数据 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionDate")
 	FFireflyVelocityBlendData VelocityBlendData;
+
+	/** 动画实例的拥有者当前倾斜幅度 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionDate")
+	FFireflyLeanAmountData LeanAmountData;
 
 #pragma endregion
 
@@ -244,13 +257,21 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|CharacterState")
 	uint8 bIsAnyMontagePlaying : 1;
 
-	/** 动画实例的拥有者当前的移动步态 */
+	/** 动画实例的拥有者的当前移动步态 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	EFireflyMovementGait CurrentMovementGait;
+	EFireflyMovementGait MovementGait;
 
-	/** 动画实例的拥有者期望的移动步态 */
+	/** 动画实例的拥有者上次更新的移动步态 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	EFireflyMovementGait TargetMovementGait;
+	EFireflyMovementGait MovementGaitLastUpdate;
+
+	/** 动画实例的拥有者的期望移动步态 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	EFireflyMovementGait TargetGait;
+
+	/** 动画实例的拥有者上次更新的期望移动步态 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	EFireflyMovementGait TargetGaitLastUpdate;
 
 #pragma endregion
 

@@ -85,6 +85,25 @@ public:
 		: Forward(InForward), Backward(InBackward), Left(InLeft), Right(InRight) {}
 };
 
+/** 倾斜幅度数据 */
+USTRUCT(BlueprintType)
+struct FFireflyLeanAmountData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ForwardDirection = 0.f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RightDirection = 0.f;
+
+	FFireflyLeanAmountData() {}
+
+	FFireflyLeanAmountData(float InForwardDirection, float InRightDirection)
+		: ForwardDirection(InForwardDirection), RightDirection(InRightDirection){}
+};
+
 /** 八方向对应的动画序列 */
 USTRUCT(BlueprintType)
 struct FFireflyLocomotionDirectionalAnimationSet

@@ -12,8 +12,8 @@ void UFireflyAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	OwnerFireflyCharacterMovement = UFireflyLocomotionFunctionLibrary::GetFireflyCharacterMovement(TryGetPawnOwner());
-	CurrentMovementGait = EFireflyMovementGait::Jog;
-	TargetMovementGait = EFireflyMovementGait::Jog;
+	MovementGait = EFireflyMovementGait::Jog;
+	TargetGait = EFireflyMovementGait::Jog;
 }
 
 void UFireflyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -83,13 +83,7 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
 
 	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);
-	LocalVelocityDirectionAngleWithOffset = LocalVelocityDirectionAngle - RootYawOffset;
-
-	if (bHasVelocity)
-	{
-		VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
-			CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
-	}
+	LocalVelocityDirectionAngleWithOffset = LocalVelocityDirectionAngle - RootYawOffset;	
 
 	if (bIsFirstUpdate)
 	{
@@ -105,6 +99,7 @@ void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
 	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(
 		PivotDirection, UKismetMathLibrary::Normal(WorldAcceleration), 0.5f));
+	RelativeAccelerationAmount = CalculateRelativeAccelerationAmount();
 }
 
 void UFireflyAnimInstance::UpdateDirectionData_Implementation()
@@ -120,6 +115,16 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 	PivotDirectionFromAcceleration = UFireflyLocomotionFunctionLibrary::GetOppositeCardinalDirection(
 		UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
 			UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation), DirectionMethod));
+
+	if (bHasVelocity)
+	{
+		VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
+			CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
+		
+		LeanAmountData = SmoothLeanAmountData(LeanAmountData,
+			FFireflyLeanAmountData(RelativeAccelerationAmount.X, RelativeAccelerationAmount.Y),
+			GetDeltaSeconds(), 4.f);
+	}
 
 	if (bIsFirstUpdate)
 	{
@@ -142,11 +147,14 @@ FFireflyVelocityBlendData UFireflyAnimInstance::SmoothVelocityBlendData(FFirefly
 FFireflyVelocityBlendData UFireflyAnimInstance::CalculateVelocityBlendData() const
 {
 	const FVector LocalVelocityUnit = UKismetMathLibrary::Normal(LocalVelocity);
+
 	const float LocalVelocityUnitX = LocalVelocityUnit.X;
 	const float LocalVelocityUnitY = LocalVelocityUnit.Y;
 	const float LocalVelocityUnitZ = LocalVelocityUnit.Z;
+
 	const float LocalSum = FMath::Abs<float>(LocalVelocityUnitX) + FMath::Abs<float>(LocalVelocityUnitY)
 		+ FMath::Abs<float>(LocalVelocityUnitZ);
+
 	const FVector LocalRelativeDirection = FVector(
 		UKismetMathLibrary::SafeDivide(LocalVelocityUnitX, LocalSum),
 		UKismetMathLibrary::SafeDivide(LocalVelocityUnitY, LocalSum),
@@ -157,6 +165,29 @@ FFireflyVelocityBlendData UFireflyAnimInstance::CalculateVelocityBlendData() con
 		UKismetMathLibrary::FClamp(LocalRelativeDirection.X, -1.f, 0.f),
 		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, -1.f, 0.f),
 		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, 0.f, 1.f));
+}
+
+FFireflyLeanAmountData UFireflyAnimInstance::SmoothLeanAmountData(FFireflyLeanAmountData Current,
+	FFireflyLeanAmountData Target, float DeltaSeconds, float InterpSpeed)
+{
+	return FFireflyLeanAmountData(
+		UKismetMathLibrary::FInterpTo(Current.ForwardDirection, Target.ForwardDirection, DeltaSeconds, InterpSpeed),
+		UKismetMathLibrary::FInterpTo(Current.RightDirection, Target.RightDirection, DeltaSeconds, InterpSpeed)
+	);
+}
+
+FVector UFireflyAnimInstance::CalculateRelativeAccelerationAmount()
+{
+	if (UKismetMathLibrary::Dot_VectorVector(WorldAcceleration, WorldAcceleration) > 0.f)
+	{
+		const float MaxAcceleration = OwnerFireflyCharacterMovement->GetMaxAcceleration();
+		return TryGetPawnOwner()->GetActorRotation().UnrotateVector(UKismetMathLibrary::Divide_VectorFloat(
+				WorldAcceleration.GetClampedToMaxSize(MaxAcceleration), MaxAcceleration));
+	}
+
+	const float MaxBrakingDeceleration = OwnerFireflyCharacterMovement->GetMaxBrakingDeceleration();
+	return TryGetPawnOwner()->GetActorRotation().UnrotateVector(UKismetMathLibrary::Divide_VectorFloat(
+			WorldAcceleration.GetClampedToMaxSize(MaxBrakingDeceleration), MaxBrakingDeceleration));
 }
 
 void UFireflyAnimInstance::UpdateCharacterState_Implementation()
@@ -177,8 +208,10 @@ void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 			LocalAcceleration.GetSafeNormal(1e-4), LocalVelocity.GetSafeNormal(1e-4)),
 			-0.6, 0.6);
 
-	CurrentMovementGait = OwnerFireflyCharacterMovement->GetCurrentMovementGait();
-	TargetMovementGait = OwnerFireflyCharacterMovement->GetTargetMovementGait();
+	MovementGaitLastUpdate = MovementGait;
+	MovementGait = OwnerFireflyCharacterMovement->GetCurrentMovementGait();
+	TargetGaitLastUpdate = TargetGait;
+	TargetGait = OwnerFireflyCharacterMovement->GetTargetMovementGait();
 	bIsAnyMontagePlaying = IsAnyMontagePlaying();
 }
 
