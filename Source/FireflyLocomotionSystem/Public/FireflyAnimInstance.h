@@ -114,6 +114,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	FVector WorldVelocity = FVector::ZeroVector;
 
+	/** 动画实例的拥有者上次更新的世界坐标系的速度矢量 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	FVector WorldVelocityLastUpdate = FVector::ZeroVector;
+
 	/** 动画实例的拥有者当前本地坐标系的速度矢量 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	FVector LocalVelocity = FVector::ZeroVector;
