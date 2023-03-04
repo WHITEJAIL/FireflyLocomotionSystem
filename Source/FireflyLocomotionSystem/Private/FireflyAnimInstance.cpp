@@ -76,7 +76,7 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	bool bWasMovingLastUpdate = !LocalVelocity.IsZero();
 
 	WorldVelocityLastUpdate = WorldVelocity;
-	WorldVelocity = TryGetPawnOwner()->GetVelocity();
+	WorldVelocity = TryGetPawnOwner()->GetVelocity();	
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
 
@@ -95,11 +95,12 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 
 void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
 {
-	WorldAcceleration = OwnerFireflyCharacterMovement->GetCurrentAcceleration();
-	LocalAcceleration = WorldRotation.UnrotateVector(WorldAcceleration);
+	WorldInputAcceleration = OwnerFireflyCharacterMovement->GetCurrentAcceleration();
+	WorldVelocityAcceleration = UKismetMathLibrary::Divide_VectorFloat(WorldVelocity - WorldVelocityLastUpdate, GetDeltaSeconds());
+	LocalAcceleration = WorldRotation.UnrotateVector(WorldInputAcceleration);
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
 	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(
-		PivotDirection, UKismetMathLibrary::Normal(WorldAcceleration), 0.5f));
+		PivotDirection, UKismetMathLibrary::Normal(WorldInputAcceleration), 0.5f));
 	RelativeAccelerationAmount = CalculateRelativeAccelerationAmount();
 }
 
@@ -179,16 +180,16 @@ FFireflyLeanAmountData UFireflyAnimInstance::SmoothLeanAmountData(FFireflyLeanAm
 
 FVector UFireflyAnimInstance::CalculateRelativeAccelerationAmount()
 {
-	if (UKismetMathLibrary::Dot_VectorVector(WorldAcceleration, WorldVelocity) > 0.f)
+	if (UKismetMathLibrary::Dot_VectorVector(WorldVelocityAcceleration, WorldVelocity) > 0.f)
 	{
 		const float MaxAcceleration = OwnerFireflyCharacterMovement->GetMaxAcceleration();
 		return TryGetPawnOwner()->GetActorRotation().UnrotateVector(UKismetMathLibrary::Divide_VectorFloat(
-				WorldAcceleration.GetClampedToMaxSize(MaxAcceleration), MaxAcceleration == 0.f ? 1.f : MaxAcceleration));
+			WorldVelocityAcceleration.GetClampedToMaxSize(MaxAcceleration), MaxAcceleration == 0.f ? 1.f : MaxAcceleration));
 	}
 
 	const float MaxBrakingDeceleration = OwnerFireflyCharacterMovement->GetMaxBrakingDeceleration();
 	return TryGetPawnOwner()->GetActorRotation().UnrotateVector(UKismetMathLibrary::Divide_VectorFloat(
-		WorldAcceleration.GetClampedToMaxSize(MaxBrakingDeceleration), MaxBrakingDeceleration == 0.f ? 1.f : MaxBrakingDeceleration));
+		WorldVelocityAcceleration.GetClampedToMaxSize(MaxBrakingDeceleration), MaxBrakingDeceleration == 0.f ? 1.f : MaxBrakingDeceleration));
 }
 
 void UFireflyAnimInstance::UpdateCharacterState_Implementation()

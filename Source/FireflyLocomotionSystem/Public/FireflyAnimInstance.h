@@ -153,11 +153,15 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	uint8 bHasAcceleration : 1;
 
-	/** 动画实例的拥有者当前世界坐标系的速度矢量 */
+	/** 动画实例的拥有者当前角色在世界坐标系的加速度矢量（基于输入） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
-	FVector WorldAcceleration = FVector::ZeroVector;
+	FVector WorldInputAcceleration = FVector::ZeroVector;
 
-	/** 动画实例的拥有者当前本地坐标系的速度矢量 */
+	/** 动画实例的拥有者当前角色在世界坐标系的加速度矢量（基于速度） */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
+	FVector WorldVelocityAcceleration = FVector::ZeroVector;
+
+	/** 动画实例的拥有者当前本地坐标系的加速度矢量 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector LocalAcceleration = FVector::ZeroVector;
 
