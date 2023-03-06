@@ -79,6 +79,7 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	WorldVelocity = TryGetPawnOwner()->GetVelocity();	
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
+	MovementSpeedRate = UKismetMathLibrary::SafeDivide(WorldVelocity.Size(), OwnerFireflyCharacterMovement->MaxNaturalMovementSpeed);
 
 	LocalVelocityDirectionAngleLastUpdate = LocalVelocityDirectionAngle;
 	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
@@ -164,8 +165,8 @@ FFireflyVelocityBlendData UFireflyAnimInstance::CalculateVelocityBlendData() con
 
 	return FFireflyVelocityBlendData(
 		UKismetMathLibrary::FClamp(LocalRelativeDirection.X, 0.f, 1.f),
-		UKismetMathLibrary::FClamp(LocalRelativeDirection.X, -1.f, 0.f),
-		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, -1.f, 0.f),
+		-UKismetMathLibrary::FClamp(LocalRelativeDirection.X, -1.f, 0.f),
+		-UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, -1.f, 0.f),
 		UKismetMathLibrary::FClamp(LocalRelativeDirection.Y, 0.f, 1.f));
 }
 

@@ -88,6 +88,9 @@
 + 一直向右后：Common_Walk_B_R_Loop
 + 结束向右后：Common_Walk_B_R_Stop
 + 向右后时不转身朝反方向走：Common_Walk_B_R_Pivot
+<br>
++ 向左时不转身朝反方向走：Common_Walk_L_Pivot
++ 向右时不转身朝反方向走：Common_Walk_R_Pivot
 
 ## 站立移动动画 - 轻步慢跑（Jog）
 
@@ -120,6 +123,9 @@
 + 一直向右后：Common_Jog_B_R_Loop
 + 结束向右后：Common_Jog_B_R_Stop
 + 向右后时不转身朝反方向跑：Common_Run_B_R_Pivot
+<br>
++ 向左时不转身朝反方向走：Common_Jog_L_Pivot
++ 向右时不转身朝反方向走：Common_Jog_R_Pivot
 
 ## 站立移动动画 - 快步奔跑（Run）
 
@@ -159,6 +165,9 @@
 + 一直向右后：Common_Crouch_Walk_B_R_Loop
 + 结束向右后：Common_Crouch_Walk_B_R_Stop
 + 向右后时不转身朝反方向走：Common_Crouch_Walk_B_R_Pivot
+<br>
++ 向左时不转身朝反方向走：Common_Crouch_Walk_L_Pivot
++ 向右时不转身朝反方向走：Common_Crouch_Walk_R_Pivot
 
 ## 蹲伏移动动画 - 潜行轻步慢跑（Crouch_Jog）
 
@@ -191,6 +200,9 @@
 + 一直向右后：Common_Crouch_Jog_B_R_Loop
 + 结束向右后：Common_Crouch_Jog_B_R_Stop
 + 向右后时不转身朝反方向走：Common_Crouch_Walk_B_R_Pivot
+<br>
++ 向左时不转身朝反方向走：Common_Crouch_Jog_L_Pivot
++ 向右时不转身朝反方向走：Common_Crouch_Jog_R_Pivot
 
 # 持有武器动画（WeaponName）
 

@@ -122,6 +122,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	FVector LocalVelocity = FVector::ZeroVector;
 
+	/** 动画实例的拥有者当前速度值和其最大自然移动速度的比率 */
+	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
+	float MovementSpeedRate = 0.f;
+
 	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	float LocalVelocityDirectionAngle = 0.f;

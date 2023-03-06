@@ -158,5 +158,10 @@ protected:
 	/** 是否开启轻步慢跑 */
 	uint8 RequestToWalk : 1;
 
+public:
+	/** 角色的最大自然移动速度 */
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "CharacterMovement (General Settings)")
+	float MaxNaturalMovementSpeed = 1200.f;
+
 #pragma endregion
 };
