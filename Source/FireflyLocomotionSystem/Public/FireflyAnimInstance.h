@@ -91,10 +91,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
 	float YawDeltaSpeed = 0.f;
 
-	/** 动画实例的拥有者当前身体倾斜的角度 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|RotationData")
-	float AdditiveLeanAngle = 0.f;
-
 #pragma endregion
 
 

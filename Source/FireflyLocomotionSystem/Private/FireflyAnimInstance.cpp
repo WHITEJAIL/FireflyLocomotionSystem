@@ -79,7 +79,8 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	WorldVelocity = TryGetPawnOwner()->GetVelocity();	
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
-	MovementSpeedRate = UKismetMathLibrary::SafeDivide(WorldVelocity.Size(), OwnerFireflyCharacterMovement->MaxNaturalMovementSpeed);
+	const float NewMovementSpeedRate = UKismetMathLibrary::SafeDivide(LocalVelocity.X, OwnerFireflyCharacterMovement->MaxNaturalMovementSpeed);
+	MovementSpeedRate = UKismetMathLibrary::FInterpTo(MovementSpeedRate, NewMovementSpeedRate, GetDeltaSeconds(), 4.f);
 
 	LocalVelocityDirectionAngleLastUpdate = LocalVelocityDirectionAngle;
 	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
