@@ -80,7 +80,7 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	LocalVelocity = WorldRotation.UnrotateVector(WorldVelocity);
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
 	const float NewMovementSpeedRate = UKismetMathLibrary::SafeDivide(LocalVelocity.X, OwnerFireflyCharacterMovement->MaxNaturalMovementSpeed);
-	MovementSpeedRate = UKismetMathLibrary::FInterpTo(MovementSpeedRate, NewMovementSpeedRate, GetDeltaSeconds(), 4.f);
+	MovementSpeedLeanRate = UKismetMathLibrary::Lerp(MovementSpeedLeanRate, NewMovementSpeedRate, GetDeltaSeconds() * LeanCalculationLerpSpeed);
 
 	LocalVelocityDirectionAngleLastUpdate = LocalVelocityDirectionAngle;
 	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
@@ -120,15 +120,12 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 		UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
 			UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation), DirectionMethod));
 
-	if (bHasVelocity)
-	{
-		VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
-			CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
+	VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
+		CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
 		
-		LeanAmountData = SmoothLeanAmountData(LeanAmountData,
-			FFireflyLeanAmountData(RelativeAccelerationAmount.X, RelativeAccelerationAmount.Y),
-			GetDeltaSeconds(), 4.f);
-	}
+	LeanAmountData = SmoothLeanAmountData(LeanAmountData,
+		FFireflyLeanAmountData(RelativeAccelerationAmount.X, RelativeAccelerationAmount.Y),
+		GetDeltaSeconds(), LeanCalculationLerpSpeed);	
 
 	if (bIsFirstUpdate)
 	{
@@ -175,8 +172,8 @@ FFireflyLeanAmountData UFireflyAnimInstance::SmoothLeanAmountData(FFireflyLeanAm
 	FFireflyLeanAmountData Target, float DeltaSeconds, float InterpSpeed)
 {
 	return FFireflyLeanAmountData(
-		UKismetMathLibrary::FInterpTo(Current.ForwardDirection, Target.ForwardDirection, DeltaSeconds, InterpSpeed),
-		UKismetMathLibrary::FInterpTo(Current.RightDirection, Target.RightDirection, DeltaSeconds, InterpSpeed)
+		UKismetMathLibrary::Lerp(Current.ForwardDirection, Target.ForwardDirection, DeltaSeconds * InterpSpeed),
+		UKismetMathLibrary::Lerp(Current.RightDirection, Target.RightDirection, DeltaSeconds * InterpSpeed)
 	);
 }
 
