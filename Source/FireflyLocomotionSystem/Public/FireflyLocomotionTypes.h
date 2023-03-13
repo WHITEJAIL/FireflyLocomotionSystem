@@ -112,26 +112,26 @@ struct FFireflyLocomotionDirectionalAnimationSet
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_Forward;
+	UAnimSequenceBase* Anim_Forward = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_Backward;
+	UAnimSequenceBase* Anim_Backward = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_Left;
+	UAnimSequenceBase* Anim_Left = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_Right;
+	UAnimSequenceBase* Anim_Right = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_FwdLeft;
+	UAnimSequenceBase* Anim_FwdLeft = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_FwdRight;
+	UAnimSequenceBase* Anim_FwdRight = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_BwdLeft;
+	UAnimSequenceBase* Anim_BwdLeft = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UAnimSequenceBase* Anim_BwdRight;
+	UAnimSequenceBase* Anim_BwdRight = nullptr;
 };

@@ -114,7 +114,7 @@ void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 	LocalVelocityDirection = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
 		LocalVelocityDirectionAngleWithOffset, DirectionMethod);
 	LocalVelocityDirectionNoOffset = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
-		LocalVelocityDirectionAngleWithOffset, DirectionMethod);
+		LocalVelocityDirectionAngle, DirectionMethod);
 
 	PivotDirectionFromAcceleration = UFireflyLocomotionFunctionLibrary::GetOppositeCardinalDirection(
 		UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
