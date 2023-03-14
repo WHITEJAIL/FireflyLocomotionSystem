@@ -11,7 +11,7 @@
 enum class EFireflyMovementGait : uint8;
 class UFireflyCharacterMovementComponent;
 
-/**  */
+/** 实现AdvancedLocomotionSystem的动画实例基类 */
 UCLASS()
 class FIREFLYLOCOMOTIONSYSTEM_API UFireflyAnimInstance : public UAnimInstance
 {
@@ -130,14 +130,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
 	float LocalVelocityDirectionAngleWithOffset = 0.f;
 
-	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（上一次更新） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	float LocalVelocityDirectionAngleLastUpdate = 0.f;
-
-	/** 动画实例的拥有者当前速度矢量相对于自身坐标系的角度（考虑角色航向角的偏移）（上一次更新） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityState")
-	float LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;
-
 #pragma endregion
 
 
@@ -165,10 +157,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector LocalAcceleration = FVector::ZeroVector;
 
-	/** 动画实例的拥有者当前的期望运动方向矢量 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
-	FVector PivotDirection = FVector::ZeroVector;
-
 	/** 动画实例的拥有者当前的加速度比率 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|AccelerationDate")
 	FVector RelativeAccelerationAmount;
@@ -194,30 +182,13 @@ protected:
 	virtual FVector CalculateRelativeAccelerationAmount();
 
 protected:
-	
-	/** 动画实例的拥有者开始移动时的方向 */
+	/** 动画实例的拥有者当前的移动方向（四向运动） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType StartDirection;
+	EFireflyLocomotionDirectionType LocomotionDirection_4Way;
 
-	/** 动画实例的拥有者当前的速度方向 */
+	/** 动画实例的拥有者当前的移动方向（八向运动） */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType LocalVelocityDirection;
-
-	/** 动画实例的拥有者当前的速度方向（不考虑角色航向角的偏移） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType LocalVelocityDirectionNoOffset;
-
-	/** 动画实例的拥有者当前的速度方向（上一次更新） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType LocalVelocityDirectionLastUpdate;
-
-	/** 动画实例的拥有者当前的速度方向（不考虑角色航向角的偏移）（上一次更新） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType LocalVelocityDirectionNoOffsetLastUpdate;
-
-	/** 动画实例的拥有者当前的加速度方向的回转方向（用于回转运动） */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionData")
-	EFireflyLocomotionDirectionType PivotDirectionFromAcceleration;
+	EFireflyLocomotionDirectionType LocomotionDirection_8Way;
 
 	/** 动画实例的拥有者当前速度混合数据 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|DirectionDate")
@@ -266,17 +237,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	EFireflyMovementGait MovementGait;
 
-	/** 动画实例的拥有者上次更新的移动步态 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	EFireflyMovementGait MovementGaitLastUpdate;
-
 	/** 动画实例的拥有者的期望移动步态 */
 	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
 	EFireflyMovementGait TargetGait;
-
-	/** 动画实例的拥有者上次更新的期望移动步态 */
-	UPROPERTY(BlueprintReadWrite, Category = "FireflyLocomoitionSystem|VelocityData")
-	EFireflyMovementGait TargetGaitLastUpdate;
 
 #pragma endregion
 
@@ -316,23 +279,19 @@ protected:
 
 protected:
 	/** 动画实例的拥有者的倾斜叠加计算速度 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|Settings")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Settings")
 	float LeanCalculationLerpSpeed = 10.f;
 
-	/** 动画实例的拥有者当前的速度方向 */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FireflyLocomoitionSystem|Settings")
-	EFireflyLocomotionDirectionMethod DirectionMethod;
-
 	/** 动画实例的拥有者当前是否允许计算根航向的偏移 */
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|Settings")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Settings")
 	bool bEnableRootYawOffset = true;
 
 	/** 动画实例的拥有者当前航向角偏移的范围 */
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|Settings", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Settings", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
 	FVector2D RootYawOffsetAngleRange = FVector2D(-120.f, 100.f);
 
 	/** 动画实例的拥有者当前蹲伏时航向角偏移的范围 */
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FireflyLocomoitionSystem|Settings", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Settings", Meta = (ClampMin = -180, ClampMax = 180, UIMin = -180, UIMax = 180))
 	FVector2D RootYawOffsetAngleRangeCrouched = FVector2D(-90.f, 80.f);
 
 #pragma endregion

@@ -81,18 +81,9 @@ void UFireflyAnimInstance::UpdateVelocityData_Implementation()
 	bHasVelocity = !FMath::IsNearlyEqual(LocalVelocity.SizeSquared2D(), 0.f, 1.e-6);
 	const float NewMovementSpeedRate = UKismetMathLibrary::SafeDivide(LocalVelocity.X, OwnerFireflyCharacterMovement->MaxNaturalMovementSpeed);
 	MovementSpeedLeanRate = UKismetMathLibrary::Lerp(MovementSpeedLeanRate, NewMovementSpeedRate, GetDeltaSeconds() * LeanCalculationLerpSpeed);
-
-	LocalVelocityDirectionAngleLastUpdate = LocalVelocityDirectionAngle;
-	LocalVelocityDirectionAngleWithOffsetLastUpdate = LocalVelocityDirectionAngleWithOffset;
-
+	
 	LocalVelocityDirectionAngle = UKismetAnimationLibrary::CalculateDirection(WorldVelocity, WorldRotation);
 	LocalVelocityDirectionAngleWithOffset = LocalVelocityDirectionAngle - RootYawOffset;	
-
-	if (bIsFirstUpdate)
-	{
-		LocalVelocityDirectionAngleLastUpdate = 0.f;
-		LocalVelocityDirectionAngleWithOffsetLastUpdate = 0.f;
-	}
 }
 
 void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
@@ -101,37 +92,22 @@ void UFireflyAnimInstance::UpdateAccelerationData_Implementation()
 	WorldVelocityAcceleration = UKismetMathLibrary::Divide_VectorFloat(WorldVelocity - WorldVelocityLastUpdate, GetDeltaSeconds());
 	LocalAcceleration = WorldRotation.UnrotateVector(WorldInputAcceleration);
 	bHasAcceleration = !FMath::IsNearlyEqual(LocalAcceleration.SizeSquared2D(), 0.f, 1.e-6);
-	PivotDirection = UKismetMathLibrary::Normal(UKismetMathLibrary::VLerp(
-		PivotDirection, UKismetMathLibrary::Normal(WorldInputAcceleration), 0.5f));
 	RelativeAccelerationAmount = CalculateRelativeAccelerationAmount();
 }
 
 void UFireflyAnimInstance::UpdateDirectionData_Implementation()
 {
-	LocalVelocityDirectionLastUpdate = LocalVelocityDirection;
-	LocalVelocityDirectionNoOffsetLastUpdate = LocalVelocityDirectionNoOffset;
-
-	LocalVelocityDirection = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
-		LocalVelocityDirectionAngleWithOffset, DirectionMethod);
-	LocalVelocityDirectionNoOffset = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
-		LocalVelocityDirectionAngle, DirectionMethod);
-
-	PivotDirectionFromAcceleration = UFireflyLocomotionFunctionLibrary::GetOppositeCardinalDirection(
-		UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
-			UKismetAnimationLibrary::CalculateDirection(PivotDirection, WorldRotation), DirectionMethod));
+	LocomotionDirection_4Way = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
+		LocalVelocityDirectionAngle, EFireflyLocomotionDirectionMethod::FourDirection);
+	LocomotionDirection_8Way = UFireflyLocomotionFunctionLibrary::SelectLocomotionDirectionFromAngle(
+		LocalVelocityDirectionAngle, EFireflyLocomotionDirectionMethod::EightDirection);
 
 	VelocityBlendData = SmoothVelocityBlendData(VelocityBlendData, 
 		CalculateVelocityBlendData(), GetDeltaSeconds(), 15.f);
 		
 	LeanAmountData = SmoothLeanAmountData(LeanAmountData,
 		FFireflyLeanAmountData(RelativeAccelerationAmount.X, RelativeAccelerationAmount.Y),
-		GetDeltaSeconds(), LeanCalculationLerpSpeed);	
-
-	if (bIsFirstUpdate)
-	{
-		LocalVelocityDirectionLastUpdate = EFireflyLocomotionDirectionType::Forward;
-		LocalVelocityDirectionNoOffsetLastUpdate = EFireflyLocomotionDirectionType::Forward;
-	}
+		GetDeltaSeconds(), LeanCalculationLerpSpeed);
 }
 
 FFireflyVelocityBlendData UFireflyAnimInstance::SmoothVelocityBlendData(FFireflyVelocityBlendData Current,
@@ -208,10 +184,8 @@ void UFireflyAnimInstance::UpdateCharacterState_Implementation()
 		&&UKismetMathLibrary::InRange_FloatFloat(FVector::DotProduct(
 			LocalAcceleration.GetSafeNormal(1e-4), LocalVelocity.GetSafeNormal(1e-4)),
 			-0.6, 0.6);
-
-	MovementGaitLastUpdate = MovementGait;
+	
 	MovementGait = OwnerFireflyCharacterMovement->GetCurrentMovementGait();
-	TargetGaitLastUpdate = TargetGait;
 	TargetGait = OwnerFireflyCharacterMovement->GetTargetMovementGait();
 	bIsAnyMontagePlaying = IsAnyMontagePlaying();
 }

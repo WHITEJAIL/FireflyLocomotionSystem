@@ -34,13 +34,13 @@ public:
 
 #pragma region Direction
 
-	/** 根据指定的角度值确认一个方向，可以只考虑四向，也可以考虑八向 */
-	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
+	/** 根据指定的角度值和方向计算模式确认一个方向 */
+	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem", Meta = (BlueprintThreadSafe = true))
 	static EFireflyLocomotionDirectionType SelectLocomotionDirectionFromAngle(float Angle, 
-		EFireflyLocomotionDirectionMethod DirectionMethod = EFireflyLocomotionDirectionMethod::FourDirection);
+		EFireflyLocomotionDirectionMethod DirectionMethod);
 
 	/** 根据指定的方向值确认一个相反的方向 */
-	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem")
+	UFUNCTION(BlueprintPure, Category = "FireflyLocomotionSystem", Meta = (BlueprintThreadSafe = true))
 	static EFireflyLocomotionDirectionType GetOppositeCardinalDirection(EFireflyLocomotionDirectionType InDirection);
 
 	/** 根据特定方向值从给定的动画集中确认一个动画序列 */
